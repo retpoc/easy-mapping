@@ -1,0 +1,1656 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="Map ผล searchCustomerProfile ลง Workflow N1002 (Auto / Mortgage)">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23080d25'/%3E%3Ccircle cx='9' cy='10' r='3' fill='none' stroke='%23bda9ff' stroke-width='1.8'/%3E%3Ccircle cx='9' cy='22' r='3' fill='none' stroke='%23bda9ff' stroke-width='1.8'/%3E%3Crect x='21' y='12.5' width='7' height='7' rx='2' fill='%23c9d0ff'/%3E%3Cpath d='M12 10C17 10 16.5 16 21 16M12 22C17 22 16.5 16 21 16' fill='none' stroke='%23bda9ff' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E">
+<title>Easy-Mapping Workflow</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anuphan:wght@300;400;500&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Thai:wght@400;500;600&display=swap">
+<style>
+/* Layout: one 1180px column. Atmospheric hero holding the mapping console → long dark pause →
+   branching field diagram → three control cards → history log → FAQ → sunset CTA → footer.
+   Deliberately single-theme (dark navy), per the brief. */
+:root{
+  --bg:#080d25; --bg-deep:#060a1d; --surface:#0d1433;
+  --line:rgba(170,180,230,.14); --line-2:rgba(170,180,230,.24); --line-3:rgba(170,180,230,.36);
+  --fg:#f5f5f7; --muted:#9da1b8; --dim:#6b7092;
+  --accent:#a3adff; --violet:#bda9ff; --pink:#f3c2d4; --sky:#86b6ff;
+  --ok:#6fd8b0; --warn:#f0c674; --err:#ff9494;
+  --btn-fg:#0a0f2a;
+  --font-display:"Anuphan","IBM Plex Sans Thai",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-body:"IBM Plex Sans Thai","Anuphan",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-mono:"IBM Plex Mono","IBM Plex Sans Thai",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --r-card:18px; --r-panel:28px; --wrap:1180px;
+  color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:border-box}
+[hidden]{display:none!important}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);font:400 15px/1.7 var(--font-body);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit}
+button{font-family:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:6px}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important;animation:none!important}}
+
+.wrap{position:relative;z-index:2;width:100%;max-width:calc(var(--wrap) + 64px);margin-inline:auto;
+  padding-left:max(32px, env(safe-area-inset-left,0px));padding-right:max(32px, env(safe-area-inset-right,0px))}
+@media (max-width:640px){.wrap{padding-left:max(16px, env(safe-area-inset-left,0px));padding-right:max(16px, env(safe-area-inset-right,0px))}}
+
+.mute{color:var(--muted)}
+.dim{color:var(--dim)}
+.micro{font:500 11px/1 var(--font-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
+code{font-family:var(--font-mono)}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:999px;padding:13px 24px;font:500 15px/1 var(--font-body);text-decoration:none;cursor:pointer;border:1px solid transparent;transition:transform .15s ease,filter .15s ease,background .15s ease,border-color .15s ease;white-space:nowrap}
+.btn-primary{background:var(--fg);color:var(--btn-fg)}
+.btn-primary:hover{filter:brightness(1.1);transform:translateY(-1px)}
+.btn-ghost{background:rgba(255,255,255,.04);border-color:var(--line-2);color:var(--fg)}
+.btn-ghost:hover{background:rgba(255,255,255,.08);border-color:var(--line-3)}
+.btn-dark{background:rgba(8,13,37,.55);border-color:rgba(255,255,255,.18);color:var(--fg)}
+.btn-dark:hover{background:rgba(8,13,37,.7)}
+.btn-sm{padding:9px 16px;font-size:14px}
+.btn-xs{padding:8px 14px;font-size:13px}
+.btn[disabled]{opacity:.6;cursor:progress;transform:none;filter:none}
+.btn-txt{background:none;border:0;color:var(--muted);font:500 13px/1 var(--font-body);cursor:pointer;padding:7px 9px;border-radius:8px}
+.btn-txt:hover{color:var(--fg);background:rgba(255,255,255,.05)}
+.link{align-self:flex-start;background:none;border:0;padding:0;color:var(--fg);font:500 14px/1.4 var(--font-body);cursor:pointer;text-decoration:none;display:inline-flex;gap:6px;align-items:center}
+.link:hover{color:var(--accent)}
+.link span{transition:transform .15s}
+.link:hover span{transform:translateX(3px)}
+
+/* ─── Hero ─────────────────────────────────────────── */
+.hero{position:relative;overflow:hidden;padding-bottom:clamp(72px,10vw,120px);
+  background:
+    radial-gradient(120% 55% at 50% 100%, rgba(122,100,236,.50) 0%, rgba(72,62,178,.22) 42%, transparent 72%),
+    radial-gradient(50% 35% at 88% 78%, rgba(243,194,212,.16), transparent 70%),
+    radial-gradient(45% 30% at 10% 70%, rgba(134,182,255,.14), transparent 70%),
+    linear-gradient(180deg,#050919 0%,#0a1034 42%,#141a55 74%,#1c1a5c 100%)}
+.hero::after{content:"";position:absolute;inset:auto 0 0 0;height:220px;background:linear-gradient(180deg,rgba(8,13,37,0),var(--bg));pointer-events:none;z-index:1}
+#sky{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
+
+.nav{display:flex;align-items:center;gap:24px;padding-block:22px}
+.brand{display:inline-flex;align-items:center;gap:10px;text-decoration:none;font:500 15px/1 var(--font-display);white-space:nowrap}
+.brand svg{width:26px;height:26px;flex:none}
+.nav-links{flex:1;display:flex;justify-content:center;gap:30px}
+.nav-links a{color:var(--muted);text-decoration:none;font-size:14px;transition:color .15s}
+.nav-links a:hover{color:var(--fg)}
+.nav-right{display:flex;align-items:center;gap:12px}
+.sync{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);padding:7px 12px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.03);white-space:nowrap}
+.sync i{width:7px;height:7px;border-radius:50%;background:var(--dim);flex:none}
+.sync[data-mode="team"] i{background:var(--ok);box-shadow:0 0 10px var(--ok)}
+.sync[data-mode="readonly"] i,.sync[data-mode="local"] i{background:var(--warn)}
+@media (max-width:900px){.nav-links{display:none}.nav-right{margin-left:auto}}
+@media (max-width:520px){.sync span{display:none}.sync{padding:9px}.brand span{font-size:14px}}
+
+.hero-body{display:flex;flex-direction:column;align-items:center;text-align:center;padding-top:clamp(48px,8vw,104px)}
+.eyebrow{font:500 11.5px/1.5 var(--font-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin:0 0 26px;padding:6px 14px;max-width:100%;text-wrap:balance;border:1px solid var(--line-2);border-radius:999px;background:rgba(255,255,255,.03)}
+h1{font:300 clamp(38px,6.3vw,72px)/1.2 var(--font-display);letter-spacing:-.012em;margin:0;text-wrap:balance}
+h1 .mute{color:#a8a9cf}
+.lede{max-width:620px;color:var(--muted);font-size:16px;margin:26px auto 0;text-wrap:pretty}
+.cta-row{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:34px}
+.fine{font-size:13px;color:var(--dim);margin:18px 0 0}
+.strip{display:flex;align-items:center;flex-wrap:wrap;justify-content:center;gap:10px 22px;margin-top:44px;padding:10px 22px;border-radius:999px;border:1px solid var(--line-2);background:rgba(255,255,255,.045);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.strip-l{font-size:13px;color:var(--muted)}
+.strip-i{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--fg)}
+.strip-i b{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:50%;border:1px solid var(--line-3);background:rgba(163,173,255,.12);font:500 10.5px/1 var(--font-mono);color:var(--accent)}
+@media (max-width:640px){.strip{border-radius:22px;gap:10px 16px;padding:14px 16px}}
+
+/* ─── Console ──────────────────────────────────────── */
+.console{position:relative;z-index:3;margin-top:60px;border-radius:var(--r-panel);border:1px solid var(--line-2);
+  background:linear-gradient(180deg,rgba(22,29,74,.82),rgba(10,15,42,.9));backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.07),0 40px 120px -40px rgba(110,90,255,.55);padding:18px;scroll-margin-top:16px}
+.con-head{display:flex;align-items:flex-end;justify-content:space-between;gap:14px;flex-wrap:wrap;padding:4px 6px 16px}
+.con-title{display:flex;flex-direction:column;gap:10px;min-width:0}
+.con-chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{display:inline-flex;align-items:center;gap:8px;padding:7px 12px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.03);font-size:12.5px;text-decoration:none;color:var(--fg)}
+.chip .k{color:var(--dim)}
+.chip code{font:500 12.5px/1 var(--font-mono)}
+a.chip:hover{border-color:var(--line-3)}
+.con-grid{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:14px}
+.pane{min-width:0;display:flex;flex-direction:column;border:1px solid var(--line);border-radius:var(--r-card);background:rgba(5,8,26,.66);overflow:hidden;transition:border-color .15s}
+.pane:focus-within{border-color:var(--line-3)}
+.pane-bar{display:flex;align-items:center;flex-wrap:wrap;gap:6px;padding:9px 10px 9px 16px;border-bottom:1px solid var(--line);min-height:52px}
+.pane-t{font:500 13.5px/1 var(--font-body);display:inline-flex;align-items:center;gap:9px;white-space:nowrap}
+.led{width:7px;height:7px;border-radius:50%;background:var(--dim);flex:none}
+.led.ok{background:var(--ok);box-shadow:0 0 10px var(--ok)}
+.led.warn{background:var(--warn)}
+.led.err{background:var(--err)}
+.badge{font:500 11px/1 var(--font-body);padding:5px 9px;border-radius:999px;background:rgba(189,169,255,.14);color:var(--violet);white-space:nowrap}
+.badge.ok{background:rgba(111,216,176,.14);color:var(--ok)}
+.sp{flex:1}
+.code-in{display:block;width:100%;height:480px;min-height:200px;resize:vertical;border:0;outline:0;background:transparent;color:var(--fg);font:400 12.5px/1.6 var(--font-mono);padding:14px 16px;white-space:pre;overflow:auto;tab-size:2}
+.code-in::placeholder{color:var(--dim)}
+pre.code{margin:0;height:480px;overflow:auto;padding:14px 16px;font:400 12.5px/1.6 var(--font-mono);color:var(--muted);white-space:pre;tab-size:2}
+.j-k{color:#aab3f5}.j-s{color:#e6e7f2}.j-n{color:var(--pink)}.j-b{color:var(--sky)}.j-z{color:var(--dim)}
+mark.hl{color:inherit;border-radius:4px;padding:1px 2px;margin:0 -2px}
+.hl-map{background:rgba(111,216,176,.13);box-shadow:inset 0 -1px 0 rgba(111,216,176,.65)}
+.hl-gen{background:rgba(189,169,255,.16);box-shadow:inset 0 -1px 0 rgba(189,169,255,.7)}
+.hl-miss{background:rgba(240,198,116,.14);box-shadow:inset 0 -1px 0 rgba(240,198,116,.7)}
+.hl-pend{background:transparent;box-shadow:inset 0 0 0 1px rgba(170,180,230,.3);opacity:.75}
+.hl-gen b{background:rgba(189,169,255,.55);color:#fff;border-radius:2px;font-weight:500}
+.out-empty{display:flex;flex-direction:column;gap:10px;align-items:flex-start;justify-content:center;height:100%;font-family:var(--font-body);font-size:14px;color:var(--muted);white-space:normal;max-width:380px}
+.out-empty strong{color:var(--fg);font-weight:500;font-size:15px}
+.pane-foot{border-top:1px solid var(--line);padding:10px 14px;font-size:12.5px;color:var(--muted);display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;min-height:46px}
+.pane-foot code{color:var(--fg);font-size:12px}
+.pane-foot select{background:rgba(255,255,255,.05);color:var(--fg);border:1px solid var(--line-2);border-radius:8px;padding:4px 8px;font:inherit;max-width:100%}
+.st{display:inline-flex;align-items:center;gap:6px}
+.st::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor;flex:none}
+.st.ok{color:var(--ok)}.st.warn{color:var(--warn)}.st.err{color:var(--err)}.st.gen{color:var(--violet)}
+.st.ok::before,.st.warn::before,.st.err::before,.st.gen::before{box-shadow:0 0 8px currentColor}
+.con-mid{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px}
+.btn-map{padding:16px 20px;font-size:15px}
+.btn-map svg{width:16px;height:16px}
+.kbd{font:500 10.5px/1.4 var(--font-mono);color:var(--dim);text-align:center}
+@media (max-width:900px){
+  .con-grid{grid-template-columns:minmax(0,1fr)}
+  .con-mid{flex-direction:row}
+  .code-in,pre.code{height:340px}
+}
+@media (max-width:520px){.console{padding:10px;border-radius:22px}.con-head{padding:6px 6px 12px}}
+
+.tpl{margin-top:14px;border:1px solid var(--line);border-radius:var(--r-card);background:rgba(5,8,26,.5)}
+.tpl summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:12px;padding:14px 16px;font:500 13.5px/1.3 var(--font-body)}
+.tpl summary::-webkit-details-marker{display:none}
+.tpl summary .dim{font-weight:400;font-size:12.5px}
+.tpl-body{padding:0 16px 16px;display:flex;flex-direction:column;gap:12px}
+.tpl-body p{margin:0;font-size:13px;color:var(--muted);max-width:760px}
+.tpl-body .code-in{height:300px;border:1px solid var(--line);border-radius:12px;background:rgba(0,0,0,.18)}
+.tpl-actions{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.err-t{color:var(--err);font-size:13px}
+
+.pm{position:relative;width:14px;height:14px;flex:none}
+.pm::before,.pm::after{content:"";position:absolute;left:50%;top:50%;background:currentColor;border-radius:1px;transition:transform .2s ease}
+.pm::before{width:12px;height:1.5px;transform:translate(-50%,-50%)}
+.pm::after{width:1.5px;height:12px;transform:translate(-50%,-50%)}
+details[open] > summary .pm::after{transform:translate(-50%,-50%) scaleY(0)}
+
+/* ─── Sections ─────────────────────────────────────── */
+.sec{padding-block:clamp(84px,11vw,140px)}
+.sec-first{padding-top:clamp(120px,15vw,200px)}
+h2{font:300 clamp(32px,4.4vw,52px)/1.22 var(--font-display);letter-spacing:-.01em;margin:0;text-wrap:balance}
+h2 .mute{color:#8f92b6}
+.two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:56px;align-items:end}
+.two > p{color:var(--muted);max-width:520px;margin:0;font-size:15.5px}
+@media (max-width:860px){.two{grid-template-columns:minmax(0,1fr);gap:20px}}
+
+/* Diagram */
+.tree{margin-top:60px;border:1px solid var(--line);border-radius:var(--r-panel);padding:34px 28px 28px;
+  background:
+    radial-gradient(70% 60% at 50% 0%, rgba(110,100,230,.12), transparent 70%),
+    radial-gradient(circle, rgba(170,180,230,.09) 1px, transparent 1.4px) 0 0/18px 18px,
+    rgba(255,255,255,.012)}
+.root-node{margin:0 auto;width:max-content;max-width:100%;display:flex;align-items:center;gap:10px 14px;flex-wrap:wrap;justify-content:center;padding:12px 18px;border:1px solid var(--line-2);border-radius:14px;background:rgba(38,48,112,.5);box-shadow:inset 0 1px 0 rgba(255,255,255,.07),0 0 50px -12px rgba(140,120,255,.6);font:500 13px/1.4 var(--font-mono)}
+.root-node .micro{color:var(--accent)}
+.trunk{width:1px;height:34px;background:var(--line-3);margin:0 auto}
+.branches{position:relative;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;padding-top:34px}
+.branches::before{content:"";position:absolute;top:0;left:calc((100% - 48px) / 8);right:calc((100% - 48px) / 8);border-top:1px solid var(--line-3)}
+.branch{position:relative;min-width:0}
+.branch::before{content:"";position:absolute;top:-34px;left:50%;height:34px;border-left:1px solid var(--line-3)}
+.node{border:1px solid var(--line);border-radius:16px;background:rgba(11,17,46,.92);overflow:hidden}
+.node header{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:11px 14px;border-bottom:1px solid var(--line);font:500 12.5px/1.2 var(--font-mono)}
+.node header small{color:var(--dim);font:400 11.5px/1 var(--font-body);white-space:nowrap}
+.node.gen header{color:var(--violet)}
+.mrow{padding:10px 14px;border-bottom:1px solid var(--line);display:grid;grid-template-columns:7px minmax(0,1fr);gap:3px 10px;align-items:center}
+.mrow:last-child{border-bottom:0}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--dim)}
+.dot.ok{background:var(--ok)}.dot.warn{background:var(--warn)}.dot.gen{background:var(--violet)}.dot.pend{background:transparent;box-shadow:inset 0 0 0 1px var(--dim)}
+.mrow .path{font:400 11.5px/1.45 var(--font-mono);color:var(--dim);overflow-wrap:anywhere}
+.mrow .path b{color:var(--muted);font-weight:500}
+.mrow .val{grid-column:2;font-size:13.5px;color:var(--fg);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.mrow .val.empty{color:var(--warn)}
+.mrow .val.pend{color:var(--dim)}
+@media (max-width:1020px){
+  .branches{grid-template-columns:repeat(2,minmax(0,1fr));padding-top:20px}
+  .branches::before,.branch::before,.trunk{display:none}
+}
+@media (max-width:560px){.branches{grid-template-columns:minmax(0,1fr)}.tree{padding:18px 14px 14px}}
+.defs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:36px;margin-top:52px}
+.def h3{font:500 16.5px/1.4 var(--font-display);margin:0 0 8px;display:flex;align-items:center;gap:10px}
+.def p{margin:0;color:var(--muted);font-size:14.5px}
+@media (max-width:860px){.defs{grid-template-columns:minmax(0,1fr);gap:26px}}
+
+/* Cards */
+.sec-head{max-width:760px}
+.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;margin-top:56px}
+.card{display:flex;flex-direction:column;gap:12px;min-width:0}
+.shot{height:330px;border:1px solid var(--line);border-radius:var(--r-card);background:linear-gradient(180deg,rgba(38,48,112,.36),rgba(11,17,46,.75));box-shadow:inset 0 1px 0 rgba(255,255,255,.06);padding:16px;display:flex;flex-direction:column;gap:12px;overflow:hidden;transition:transform .2s ease,border-color .2s ease}
+.card:hover .shot{border-color:var(--line-2);transform:translateY(-2px)}
+.shot-h{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.tag{font:500 11px/1 var(--font-body);padding:5px 9px;border-radius:999px;border:1px solid var(--line-2);color:var(--muted);white-space:nowrap}
+.card h3{font:500 18px/1.4 var(--font-display);margin:8px 0 0}
+.card p{margin:0;color:var(--muted);font-size:14.5px}
+@media (max-width:1020px){.cards{grid-template-columns:minmax(0,1fr);max-width:620px}.shot{height:auto;min-height:240px}}
+
+.rq{display:flex;flex-direction:column;gap:6px;padding:12px;border-radius:12px;border:1px solid var(--line);background:rgba(0,0,0,.2)}
+.rq-k{font-size:11.5px;color:var(--dim)}
+.rq code{font:400 13px/1.5 var(--font-mono);color:var(--muted);overflow-wrap:anywhere;letter-spacing:.02em}
+.rq code.new{color:var(--fg)}
+.rq code b{background:rgba(189,169,255,.5);color:#fff;border-radius:2px;font-weight:500}
+.rq-pos{display:flex;flex-wrap:wrap;gap:6px;margin-top:auto}
+.rq-pos span{font:500 11px/1 var(--font-mono);padding:5px 8px;border-radius:6px;background:rgba(189,169,255,.12);color:var(--violet)}
+
+.dots-box{position:relative;flex:1;min-height:150px;display:flex;align-items:center}
+#dots{display:block;width:100%}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--muted)}
+.legend i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;vertical-align:middle}
+.lg-used{background:var(--accent)}.lg-cur{background:#fff;box-shadow:0 0 8px #fff}.lg-free{background:rgba(170,180,230,.25)}
+
+.tg-list{display:flex;flex-direction:column;gap:2px;margin:-4px -6px 0}
+.tg{display:grid;grid-template-columns:auto auto minmax(0,1fr);align-items:center;gap:10px;padding:4px 6px;border-radius:8px;cursor:pointer}
+.tg:hover{background:rgba(255,255,255,.04)}
+.tg input{position:absolute;opacity:0;width:1px;height:1px}
+.sw{width:28px;height:16px;border-radius:999px;background:rgba(170,180,230,.2);position:relative;transition:background .15s;flex:none}
+.sw::after{content:"";position:absolute;left:2px;top:2px;width:12px;height:12px;border-radius:50%;background:var(--muted);transition:transform .15s,background .15s}
+.tg input:checked + .sw{background:rgba(111,216,176,.45)}
+.tg input:checked + .sw::after{transform:translateX(12px);background:#fff}
+.tg input:focus-visible + .sw{outline:2px solid var(--accent);outline-offset:2px}
+.tg-l{font-size:13px;white-space:nowrap}
+.tg-v{font:400 11.5px/1.3 var(--font-mono);color:var(--dim);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:right}
+.tg input:checked ~ .tg-v{color:var(--muted)}
+
+/* History */
+.hist{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:56px;align-items:start}
+.hist-copy p{color:var(--muted);margin:22px 0 0;max-width:460px}
+.assure{list-style:none;margin:30px 0 0;padding:0;max-width:460px}
+.assure li{padding:16px 0;border-top:1px solid var(--line);color:var(--muted);font-size:14.5px}
+.assure li:last-child{border-bottom:1px solid var(--line)}
+.assure strong{display:block;color:var(--fg);font-weight:500;font-size:15px;margin-bottom:2px}
+.term{border:1px solid var(--line-2);border-radius:var(--r-card);background:linear-gradient(180deg,rgba(13,19,52,.95),rgba(6,10,29,.95));box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 30px 80px -40px rgba(110,90,255,.45);overflow:hidden;min-width:0}
+.term-bar{display:flex;align-items:center;gap:10px;padding:12px 14px 12px 16px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.term-bar input{flex:1 1 200px;min-width:0;background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:999px;padding:8px 14px;color:var(--fg);font:400 13px/1.2 var(--font-body);outline:none}
+.term-bar input:focus{border-color:var(--line-3)}
+.term-bar input::placeholder{color:var(--dim)}
+.term-body{max-height:440px;overflow:auto;padding:8px 0;font:400 12.5px/1.5 var(--font-mono)}
+.hrow{display:grid;grid-template-columns:96px minmax(150px,auto) minmax(0,1fr) auto auto;gap:14px;align-items:center;padding:9px 16px;border-bottom:1px dashed rgba(170,180,230,.08)}
+.hrow:last-child{border-bottom:0}
+.hrow:hover{background:rgba(255,255,255,.025)}
+.h-time{color:var(--dim);white-space:nowrap}
+.h-app{color:var(--fg);white-space:nowrap}
+.h-app em{font-style:normal;color:var(--violet)}
+.h-cust{color:var(--muted);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:var(--font-body)}
+.h-cust small{color:var(--dim);font-family:var(--font-mono);margin-left:6px}
+.h-by{color:var(--dim);white-space:nowrap;font-family:var(--font-body);font-size:12px}
+.h-by.me{color:var(--ok)}
+.h-copy{background:none;border:1px solid var(--line);color:var(--muted);border-radius:6px;padding:4px 8px;font:500 11px/1 var(--font-body);cursor:pointer}
+.h-copy:hover{color:var(--fg);border-color:var(--line-3)}
+.h-empty{padding:28px 16px;color:var(--dim);font-family:var(--font-body);font-size:14px}
+.h-note{padding:10px 16px;border-top:1px solid var(--line);font:400 12px/1.5 var(--font-body);color:var(--dim)}
+@media (max-width:980px){.hist{grid-template-columns:minmax(0,1fr);gap:40px}}
+@media (max-width:640px){
+  .hrow{grid-template-columns:minmax(0,1fr) auto;gap:2px 10px}
+  .h-time{grid-column:1;order:3;font-size:11.5px}
+  .h-app{order:1}
+  .h-copy{order:2}
+  .h-cust{grid-column:1 / -1;order:4}
+  .h-by{order:5;grid-column:1 / -1;justify-self:start}
+}
+
+/* FAQ */
+.faq{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:56px;align-items:start}
+.faq-l p{color:var(--muted);margin:20px 0 0;max-width:360px}
+.orb{margin-top:48px;width:min(260px,70%);aspect-ratio:1;max-width:100%;border-radius:50%;position:relative;
+  background:radial-gradient(circle, rgba(170,180,230,.42) 1.1px, transparent 1.6px) 0 0/13px 13px;
+  -webkit-mask:radial-gradient(circle at 50% 50%, #000 0 58%, transparent 59% 64%, #000 65% 68%, transparent 69%);
+          mask:radial-gradient(circle at 50% 50%, #000 0 58%, transparent 59% 64%, #000 65% 68%, transparent 69%)}
+.orb::after{content:"";position:absolute;inset:30%;border-radius:50%;background:radial-gradient(circle, rgba(189,169,255,.35), transparent 70%)}
+.qa{border-top:1px solid var(--line)}
+.qa:last-child{border-bottom:1px solid var(--line)}
+.qa summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:20px;padding:22px 2px;font:400 17px/1.45 var(--font-display);color:var(--fg)}
+.qa summary::-webkit-details-marker{display:none}
+.qa summary:hover{color:#fff}
+.qa summary .pm{color:var(--muted)}
+.qa-a{padding:0 40px 24px 2px;color:var(--muted);font-size:14.5px}
+.qa-a p{margin:0 0 10px}.qa-a p:last-child{margin:0}
+.qa-a code{font-size:12.5px;color:var(--fg);background:rgba(255,255,255,.05);padding:1px 6px;border-radius:5px}
+@media (max-width:900px){.faq{grid-template-columns:minmax(0,1fr);gap:36px}.orb{display:none}}
+
+/* Closing CTA */
+.sec-cta{padding-top:0}
+.sunset{position:relative;overflow:hidden;border-radius:var(--r-panel);text-align:center;padding:clamp(64px,9vw,112px) 24px clamp(48px,7vw,80px);border:1px solid var(--line-2);
+  background:
+    radial-gradient(60% 40% at 22% 78%, rgba(255,226,236,.55), transparent 70%),
+    radial-gradient(55% 35% at 80% 86%, rgba(255,214,200,.45), transparent 70%),
+    radial-gradient(90% 50% at 50% 112%, rgba(255,236,242,.85), transparent 70%),
+    linear-gradient(180deg,#1b1f5a 0%,#3a3a8a 30%,#7a65b4 58%,#c995bf 82%,#f0c3d3 100%)}
+.sunset::before{content:"";position:absolute;inset:0;background:radial-gradient(circle, rgba(255,255,255,.22) 1px, transparent 1.4px) 0 0/22px 22px;-webkit-mask:linear-gradient(180deg,#000,transparent 55%);mask:linear-gradient(180deg,#000,transparent 55%);pointer-events:none}
+.sunset > *{position:relative}
+.sun-mark{width:64px;height:64px;margin:0 auto 26px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.3);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.sun-mark svg{width:30px;height:30px}
+.sunset h2{color:#fff}
+.sunset h2 span{color:rgba(255,255,255,.72)}
+.sunset .fine{color:rgba(16,18,52,.72);margin-top:22px}
+
+/* Footer */
+.foot{border-top:1px solid var(--line);padding-top:56px;padding-bottom:36px}
+.foot-grid{display:grid;grid-template-columns:minmax(0,2fr) repeat(3,minmax(0,1fr));gap:32px}
+.foot-grid h4{font:500 13px/1 var(--font-body);color:var(--fg);margin:0 0 16px}
+.foot-grid ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+.foot-grid a,.foot-grid li{color:var(--muted);text-decoration:none;font-size:13.5px}
+.foot-grid a:hover{color:var(--fg)}
+.foot-blurb{color:var(--muted);font-size:13.5px;max-width:320px;margin:14px 0 0}
+.legal{display:flex;flex-wrap:wrap;align-items:center;gap:10px 22px;margin-top:56px;padding-top:22px;border-top:1px solid var(--line);font-size:12.5px;color:var(--dim)}
+.legal .brand{font-size:13px;color:var(--fg)}
+.legal .brand svg{width:20px;height:20px}
+.disclaimer{margin:18px 0 0;font-size:12px;color:var(--dim);max-width:820px}
+@media (max-width:860px){.foot-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.foot-grid > div:first-child{grid-column:1 / -1}}
+
+/* Copy that only applies inside Claude (cloud history) or only on a plain static host */
+html[data-host="solo"] [data-cloud],html[data-host="claude"] [data-solo]{display:none!important}
+
+/* Access gate */
+html.locked,html.locked body{overflow:hidden}
+.gate{position:fixed;inset:0;z-index:100;display:grid;place-items:center;overflow:auto;
+  padding:calc(24px + env(safe-area-inset-top,0px)) max(16px, env(safe-area-inset-right,0px)) calc(24px + env(safe-area-inset-bottom,0px)) max(16px, env(safe-area-inset-left,0px));
+  background:
+    radial-gradient(circle, rgba(170,180,230,.10) 1px, transparent 1.4px) 0 0/20px 20px,
+    radial-gradient(90% 55% at 50% 100%, rgba(122,100,236,.55), transparent 70%),
+    radial-gradient(40% 30% at 85% 85%, rgba(243,194,212,.16), transparent 70%),
+    linear-gradient(180deg,#050919 0%,#0a1034 50%,#1a1a5a 100%)}
+.gate-card{width:min(420px,100%);display:flex;flex-direction:column;align-items:center;text-align:center;gap:14px;padding:40px 28px 30px;border-radius:var(--r-panel);border:1px solid var(--line-2);
+  background:linear-gradient(180deg,rgba(22,29,74,.78),rgba(10,15,42,.88));backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:inset 0 1px 0 rgba(255,255,255,.07),0 40px 120px -40px rgba(110,90,255,.6)}
+.gate-mark{width:46px;height:46px;margin-bottom:4px}
+.gate-card h2{font-size:clamp(24px,5vw,30px)}
+.gate-card > p{margin:0;color:var(--muted);font-size:14.5px;max-width:300px}
+.gate-code{width:100%;margin-top:10px;padding:14px 16px;border-radius:16px;border:1px solid var(--line-2);background:rgba(5,8,26,.7);color:var(--fg);text-align:center;font:500 26px/1 var(--font-mono);letter-spacing:.5em;text-indent:.5em;outline:none;transition:border-color .15s}
+.gate-code:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(163,173,255,.18)}
+.gate-code::placeholder{color:var(--dim);letter-spacing:.35em}
+.gate-card .btn{width:100%}
+.gate-err{min-height:1.4em;margin:0;color:var(--err);font-size:13.5px}
+.gate-note{margin:6px 0 0;font-size:12px;color:var(--dim)}
+.gate-card.shake{animation:shake .32s ease}
+@keyframes shake{20%{transform:translateX(-8px)}40%{transform:translateX(7px)}60%{transform:translateX(-5px)}80%{transform:translateX(3px)}}
+
+/* Personal number range */
+button.chip{cursor:pointer;font-family:inherit;transition:border-color .15s,background .15s}
+button.chip:hover{border-color:var(--line-3)}
+button.chip.need{border-color:rgba(240,198,116,.55);background:rgba(240,198,116,.08)}
+button.chip.need code{color:var(--warn)}
+.blk{margin:0 0 14px;padding:16px;border:1px solid var(--line-2);border-radius:var(--r-card);background:rgba(5,8,26,.55);display:grid;grid-template-columns:minmax(0,1fr) auto;gap:14px 24px;align-items:center}
+.blk-copy strong{display:block;font:500 15px/1.4 var(--font-body)}
+.blk-copy span{display:block;color:var(--muted);font-size:13.5px;max-width:520px;margin-top:4px}
+.blk-grid{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:6px}
+.blk-grid button{display:flex;flex-direction:column;align-items:center;gap:3px;min-width:58px;padding:9px 6px;border-radius:12px;border:1px solid var(--line);background:rgba(255,255,255,.03);color:var(--fg);cursor:pointer;transition:border-color .15s,background .15s}
+.blk-grid button:hover{border-color:var(--line-3);background:rgba(255,255,255,.06)}
+.blk-grid button b{font:500 15px/1 var(--font-mono)}
+.blk-grid button small{font:400 10.5px/1 var(--font-mono);color:var(--dim)}
+.blk-grid button i{font:400 10.5px/1 var(--font-body);font-style:normal;color:var(--muted)}
+.blk-grid button.on{background:var(--fg);border-color:var(--fg);color:var(--btn-fg)}
+.blk-grid button.on small,.blk-grid button.on i{color:rgba(10,15,42,.65)}
+@media (max-width:1020px){.blk{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:640px){.blk-grid{grid-template-columns:repeat(5,minmax(0,1fr))}.blk-grid button{min-width:0}}
+.lg-mine{background:rgba(163,173,255,.35);border-radius:2px!important;width:14px!important}
+.legal .btn-txt{margin-left:auto}
+
+/* Group selector */
+.seg{display:inline-flex;gap:4px;padding:4px;border-radius:999px;border:1px solid var(--line-2);background:rgba(5,8,26,.6);max-width:100%}
+.seg button{display:inline-flex;align-items:center;gap:10px;border:0;background:transparent;color:var(--muted);padding:6px 18px 6px 6px;border-radius:999px;cursor:pointer;text-align:left;min-width:0;transition:background .15s,color .15s}
+.seg button:hover{color:var(--fg);background:rgba(255,255,255,.05)}
+.seg button.on{background:var(--fg);color:var(--btn-fg)}
+.seg button[disabled]{cursor:progress;opacity:.45}
+.seg .ic{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;border:1px solid var(--line-2);background:rgba(163,173,255,.1);color:var(--accent);flex:none}
+.seg button.on .ic{background:rgba(10,15,42,.06);border-color:rgba(10,15,42,.16);color:var(--btn-fg)}
+.seg .ic svg{width:17px;height:17px}
+.seg strong{display:block;font:500 14px/1.25 var(--font-body);white-space:nowrap}
+.seg small{display:block;font-size:12px;line-height:1.3;opacity:.72;white-space:nowrap}
+.pane-g{font:500 11.5px/1 var(--font-mono);color:var(--accent);margin-left:2px}
+@media (max-width:640px){.con-title{width:100%}.seg{display:flex;width:100%}.seg button{flex:1;padding:6px 10px 6px 6px}}
+@media (max-width:420px){.seg .ic{display:none}.seg button{padding:8px 12px;justify-content:center;text-align:center}}
+
+.mseg{display:inline-flex;padding:3px;border-radius:999px;border:1px solid var(--line-2);background:rgba(0,0,0,.22)}
+.mseg button{border:0;background:transparent;color:var(--muted);font:500 11.5px/1 var(--font-body);padding:6px 10px;border-radius:999px;cursor:pointer;white-space:nowrap}
+.mseg button:hover{color:var(--fg)}
+.mseg button.on{background:rgba(189,169,255,.24);color:#fff}
+.rq code u{text-decoration:none;color:var(--fg);box-shadow:inset 0 -1.5px 0 var(--violet)}
+.rq-pos .hint{background:none;color:var(--dim);font-family:var(--font-body);padding:5px 0}
+
+.tg.off{opacity:.42;cursor:not-allowed}
+.tg.off:hover{background:none}
+.tg.off .tg-v{font-family:var(--font-body)}
+
+.h-grp{display:inline-block;font:500 10px/1 var(--font-mono);letter-spacing:.06em;padding:4px 6px;border-radius:5px;margin-right:8px;vertical-align:1px;background:rgba(134,182,255,.14);color:var(--sky)}
+.h-grp.mortgage{background:rgba(243,194,212,.14);color:var(--pink)}
+
+.cmp-wrap{margin-top:64px;padding-top:44px;border-top:1px solid var(--line);display:grid;grid-template-columns:minmax(0,4fr) minmax(0,8fr);gap:40px;align-items:start}
+.cmp-wrap h3{font:300 clamp(24px,2.6vw,30px)/1.3 var(--font-display);margin:0;text-wrap:balance}
+.cmp-wrap h3 .mute{color:#8f92b6}
+.cmp-wrap p{margin:14px 0 0;color:var(--muted);font-size:14.5px;max-width:340px}
+.cmp-scroll{min-width:0;overflow-x:auto;border:1px solid var(--line);border-radius:var(--r-card);background:rgba(255,255,255,.015)}
+.cmp{width:100%;border-collapse:collapse;min-width:560px;font-size:13.5px}
+.cmp th,.cmp td{padding:13px 16px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+.cmp tbody tr:last-child th,.cmp tbody tr:last-child td{border-bottom:0}
+.cmp tbody th{font-weight:400;color:var(--muted);white-space:nowrap;width:1%}
+.cmp thead th{font:500 14px/1.3 var(--font-body);color:var(--fg)}
+.cmp thead th small{display:block;color:var(--dim);font-weight:400;font-size:12px;margin-top:3px}
+.cmp .v{display:block;font:500 12.5px/1.5 var(--font-mono);color:var(--fg)}
+.cmp .n{display:block;color:var(--dim);font-size:12.5px;margin-top:3px;overflow-wrap:anywhere}
+.cmp .cur{background:rgba(163,173,255,.07)}
+.cmp thead .cur{box-shadow:inset 0 2px 0 var(--accent)}
+.cmp-tag{display:inline-block;margin-left:8px;font:500 10.5px/1 var(--font-body);padding:4px 7px;border-radius:999px;background:rgba(163,173,255,.18);color:var(--accent);vertical-align:2px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+@media (max-width:900px){.cmp-wrap{grid-template-columns:minmax(0,1fr);gap:22px}}
+
+/* Toast */
+.toast{position:fixed;left:50%;bottom:calc(22px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:50;max-width:calc(100% - 32px);padding:12px 18px;border-radius:14px;background:rgba(16,22,60,.96);border:1px solid var(--line-2);color:var(--fg);font-size:14px;box-shadow:0 20px 60px -20px rgba(0,0,0,.7);display:flex;gap:10px;align-items:center}
+.toast i{width:8px;height:8px;border-radius:50%;background:var(--ok);flex:none}
+.toast.warn i{background:var(--warn)}.toast.err i{background:var(--err)}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <linearGradient id="mk" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#c9d0ff"/><stop offset="1" stop-color="#bda9ff"/></linearGradient>
+    <symbol id="mark" viewBox="0 0 32 32">
+      <circle cx="7" cy="9" r="3.2" fill="none" stroke="url(#mk)" stroke-width="1.8"/>
+      <circle cx="7" cy="23" r="3.2" fill="none" stroke="url(#mk)" stroke-width="1.8"/>
+      <rect x="21.5" y="12.5" width="7" height="7" rx="2" fill="url(#mk)"/>
+      <path d="M10.2 9 C16 9 15.5 16 21.5 16 M10.2 23 C16 23 15.5 16 21.5 16" fill="none" stroke="url(#mk)" stroke-width="1.6" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="i-car" viewBox="0 0 16 16"><path d="M2.5 11V8.4l1.5-3.2a1.4 1.4 0 0 1 1.3-.8h5.4a1.4 1.4 0 0 1 1.3.8l1.5 3.2V11a.6.6 0 0 1-.6.6H3.1a.6.6 0 0 1-.6-.6ZM2.5 8.4h11" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><circle cx="5" cy="9.9" r=".8" fill="currentColor"/><circle cx="11" cy="9.9" r=".8" fill="currentColor"/><path d="M4 11.6v1.3M12 11.6v1.3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></symbol>
+    <symbol id="i-home" viewBox="0 0 16 16"><path d="M2.5 7.3 8 2.8l5.5 4.5M4 6.2v6.6c0 .3.2.5.5.5h7c.3 0 .5-.2.5-.5V6.2M6.6 13.3V9.8h2.8v3.5" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  </defs>
+</svg>
+
+<div class="gate" id="gate" role="dialog" aria-modal="true" aria-labelledby="gateTitle">
+  <form class="gate-card" id="gateForm" novalidate>
+    <svg class="gate-mark" aria-hidden="true"><use href="#mark"/></svg>
+    <span class="micro">Easy-Mapping Workflow</span>
+    <h2 id="gateTitle">ใส่รหัสเพื่อเข้าใช้งาน</h2>
+    <p>ขอรหัส 6 หลักจากคนที่ส่งลิงก์นี้ให้คุณ ใส่ครั้งเดียว เบราว์เซอร์นี้จะจำไว้</p>
+    <input class="gate-code" id="gateCode" type="password" inputmode="numeric" autocomplete="off" maxlength="6" placeholder="••••••" aria-label="รหัส 6 หลัก">
+    <button class="btn btn-primary" type="submit">เข้าใช้งาน</button>
+    <p class="gate-err" id="gateErr" role="alert"></p>
+    <p class="gate-note">ใช้กับข้อมูลทดสอบเท่านั้น</p>
+  </form>
+</div>
+<script>document.documentElement.dataset.host=(window.claude&&typeof window.claude.use==='function')?'claude':'solo';try{if(localStorage.getItem('emw.pass')==='e0bc60c82713f64ef8a57c0c40d02ce24fd0141d5cc3086259c19b1e62a62bea'){document.getElementById('gate').hidden=true}else{document.documentElement.classList.add('locked')}}catch(e){document.documentElement.classList.add('locked')}</script>
+
+<header class="hero" id="top">
+  <canvas id="sky" aria-hidden="true"></canvas>
+  <div class="wrap">
+    <nav class="nav" aria-label="หลัก">
+      <a class="brand" href="#top"><svg aria-hidden="true"><use href="#mark"/></svg><span>Easy-Mapping Workflow</span></a>
+      <div class="nav-links">
+        <a href="#tool">เครื่องมือ</a><a href="#map">แผนผังการ Map</a><a href="#controls">ฟิลด์เสริม</a><a href="#history">ประวัติเลข</a><a href="#faq">คำถาม</a>
+      </div>
+      <div class="nav-right">
+        <span class="sync" id="syncPill" data-cloud data-mode="connecting" title="กำลังเชื่อมต่อข้อมูลทีม"><i></i><span id="syncText">กำลังเชื่อมต่อ…</span></span>
+        <a class="btn btn-primary btn-sm" href="#tool" data-focus-api>เริ่ม Map</a>
+      </div>
+    </nav>
+
+    <div class="hero-body">
+      <p class="eyebrow">searchCustomerProfile → N1002 · Auto / Mortgage</p>
+      <h1>วาง API Response<br><span class="mute">ได้ Workflow พร้อมยิงทันที</span></h1>
+      <p class="lede">เลือกเส้นสินเชื่อรถหรือสินเชื่อบ้าน แล้ววางผลลัพธ์จาก Postman เว็บจะเติมชื่อ เลขบัตร ที่ทำงาน รายได้ และอาชีพลง Template ของเส้นนั้นให้ครบ พร้อมสร้าง rquId และ applicationId ใหม่ที่ไม่ซ้ำกับใครในทีม</p>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="#tool" data-focus-api>เริ่ม Map ข้อมูล</a>
+        <a class="btn btn-ghost" href="#map">ดูว่า Map ฟิลด์ไหนบ้าง</a>
+      </div>
+      <p class="fine">ใช้กับข้อมูลทดสอบ · ไม่ต้องติดตั้งอะไร · แชร์ลิงก์ให้เพื่อนในทีมใช้ได้ทันที</p>
+      <div class="strip" aria-label="รูปแบบข้อมูลที่อ่านได้">
+        <span class="strip-l">อ่านได้จาก</span>
+        <span class="strip-i"><b>PM</b>Postman response</span>
+        <span class="strip-i"><b>{ }</b>Raw JSON</span>
+        <span class="strip-i"><b>C</b>Customer object เดี่ยว</span>
+        <span class="strip-i"><b>W</b>Template ของคุณเอง</span>
+      </div>
+    </div>
+
+    <section class="console" id="tool" aria-label="Mapping console">
+      <div class="con-head">
+        <div class="con-title"><span class="micro">Mapping console · เลือกเส้น</span>
+          <div class="seg" role="group" aria-label="เลือกเส้น Workflow">
+            <button type="button" data-grp="auto" aria-pressed="true" class="on"><span class="ic"><svg aria-hidden="true"><use href="#i-car"/></svg></span><span><strong>Auto Group</strong><small>สินเชื่อรถ</small></span></button>
+            <button type="button" data-grp="mortgage" aria-pressed="false"><span class="ic"><svg aria-hidden="true"><use href="#i-home"/></svg></span><span><strong>Mortgage Group</strong><small>สินเชื่อบ้าน</small></span></button>
+          </div>
+        </div>
+        <div class="con-chips">
+          <button class="chip" id="chipBlock" type="button" aria-controls="blkPanel" aria-expanded="false" title="ช่วงของ 3 ตัวท้าย applicationId ที่คุณใช้"><span class="k">ช่วงเลขของฉัน</span><code id="chipBlockV">—</code></button>
+          <span class="chip" title="applicationId ทุกหลักยกเว้น 3 ตัวท้าย มาจาก Template"><span class="k">prefix</span><code id="chipPrefix">—</code></span>
+          <a class="chip" href="#history"><span class="k">ใช้แล้ว</span><code id="chipUsed">0 / 1000</code></a>
+          <a class="chip" href="#controls"><span class="k">ฟิลด์เสริม</span><code id="chipOpts">0 / 8</code></a>
+        </div>
+      </div>
+      <div class="blk" id="blkPanel" hidden>
+        <div class="blk-copy"><strong>เลือกช่วงเลขของคุณ</strong><span>ตกลงกับเพื่อนว่าใครใช้เลขไหน 0–9 คนละตัว เว็บจะสุ่ม 3 ตัวท้ายของ applicationId เฉพาะในช่วงของคุณ เลขจึงไม่ชนกัน ตัวเลขใต้ปุ่มคือจำนวนเลขที่เห็นว่าใช้ไปแล้วในเส้นนี้</span></div>
+        <div class="blk-grid" id="blkGrid" role="group" aria-label="ช่วงเลข"></div>
+      </div>
+      <div class="con-grid">
+        <div class="pane">
+          <div class="pane-bar">
+            <span class="pane-t"><i class="led" id="apiLed"></i>1 · API Response</span>
+            <span class="badge" id="sampleBadge">ตัวอย่าง</span>
+            <span class="sp"></span>
+            <button class="btn-txt" id="btnClear" type="button">ล้าง</button>
+            <button class="btn-txt" id="btnSample" type="button">ตัวอย่าง</button>
+          </div>
+          <textarea class="code-in" id="apiInput" spellcheck="false" wrap="off" autocomplete="off" aria-label="วาง API response ที่นี่" placeholder="วาง response ทั้งก้อนจาก Postman ที่นี่&#10;เว็บจะ Map และสร้างเลขใหม่ให้ทันทีที่วาง"></textarea>
+          <div class="pane-foot" id="apiFoot"></div>
+        </div>
+        <div class="con-mid">
+          <button class="btn btn-primary btn-map" id="btnMap" type="button" title="สุ่ม rquId และรัน applicationId ใหม่ แล้ว Map ข้อมูล">
+            <span id="btnMapText">Map</span>
+            <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h9.5M8.5 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <span class="kbd">Ctrl + Enter</span>
+        </div>
+        <div class="pane">
+          <div class="pane-bar">
+            <span class="pane-t"><i class="led" id="outLed"></i>2 · Workflow <span class="pane-g" id="outGroup">AutoGroup</span></span>
+            <span class="badge" id="outBadge">ตัวอย่าง</span>
+            <span class="sp"></span>
+            <button class="btn btn-primary btn-xs" id="btnCopy" type="button">คัดลอก JSON</button>
+          </div>
+          <pre class="code" id="output" tabindex="0" aria-label="ผลลัพธ์ Workflow JSON"></pre>
+          <div class="pane-foot" id="outFoot"></div>
+        </div>
+      </div>
+      <details class="tpl" id="tplBox">
+        <summary><span class="pm" aria-hidden="true"></span><span>Workflow Template · <span id="tplName">Auto Group</span></span><span class="dim" id="tplStatus">ค่าเริ่มต้น</span></summary>
+        <div class="tpl-body">
+          <p>แต่ละเส้นมี Template ของตัวเอง เว็บจะคัดลอก Template ของเส้นที่เลือกทุกครั้ง แล้วแทนค่าเฉพาะฟิลด์ที่ Map กับฟิลด์ที่สร้างใหม่ ค่าอื่น เช่น channel, saleInfo, loanInfo จะคงไว้ตามนี้ และจะไม่เพิ่มฟิลด์ที่ Template ไม่มี ถ้าแก้ applicationId ตรงนี้ prefix ของเลขที่รันจะเปลี่ยนตาม การแก้ไขจะจำไว้ในเบราว์เซอร์ของคุณเท่านั้น</p>
+          <textarea class="code-in" id="tplInput" spellcheck="false" wrap="off" autocomplete="off" aria-label="Workflow Template JSON"></textarea>
+          <div class="tpl-actions">
+            <button class="btn btn-ghost btn-sm" id="btnTplReset" type="button">คืนค่า Template เริ่มต้น</button>
+            <span class="err-t" id="tplErr" role="alert"></span>
+          </div>
+        </div>
+      </details>
+    </section>
+  </div>
+</header>
+
+<main>
+  <section class="sec sec-first" id="map">
+    <div class="wrap">
+      <div class="two">
+        <h2>API ก้อนเดียว<br><span class="mute">แตกเป็น 11 ฟิลด์ใน Workflow</span></h2>
+        <p>เว็บอ่านลูกค้ารายแรกใน <code>searchCustomerProfile.data</code> แล้วดึงค่าจาก nameInfo, referenceInfo และ employmentInfo ไปวางใน <code>borrowerInfo[0]</code> ตำแหน่งเดิมของ Template ทั้งเส้น Auto และ Mortgage ใช้ 11 ฟิลด์นี้เหมือนกัน ค่าที่เห็นด้านล่างคือข้อมูลจากช่องที่คุณวางล่าสุด</p>
+      </div>
+
+      <div class="tree" aria-label="แผนผังการ Map ฟิลด์">
+        <div class="root-node"><span class="micro">Source</span><span id="dRoot">searchCustomerProfile.data[0]</span><span class="st ok" id="dStatus">CUS-1000 Success</span><span class="dim">→</span><span id="dGroup">AutoGroup</span></div>
+        <div class="trunk"></div>
+        <div class="branches">
+          <div class="branch"><div class="node">
+            <header>nameInfo<small>4 ฟิลด์</small></header>
+            <div class="mrow" data-f="firstName"><i class="dot"></i><span class="path"><b>thaiFirstName</b> → firstName</span><span class="val">—</span></div>
+            <div class="mrow" data-f="firstNameEn"><i class="dot"></i><span class="path"><b>englishFirstName</b> → firstNameEn</span><span class="val">—</span></div>
+            <div class="mrow" data-f="lastName"><i class="dot"></i><span class="path"><b>thaiLastName</b> → lastName</span><span class="val">—</span></div>
+            <div class="mrow" data-f="lastNameEn"><i class="dot"></i><span class="path"><b>englishLastName</b> → lastNameEn</span><span class="val">—</span></div>
+          </div></div>
+          <div class="branch"><div class="node">
+            <header>referenceInfo[ ]<small>1 ฟิลด์</small></header>
+            <div class="mrow" data-f="referenceNo"><i class="dot"></i><span class="path"><b>referenceNumber</b> → referenceNo</span><span class="val">—</span></div>
+          </div></div>
+          <div class="branch"><div class="node">
+            <header>employmentInfo<small>3 ฟิลด์</small></header>
+            <div class="mrow" data-f="companyNameOther"><i class="dot"></i><span class="path"><b>workplace</b> → companyNameOther</span><span class="val">—</span></div>
+            <div class="mrow" data-f="monthlyIncome"><i class="dot"></i><span class="path"><b>actualIncome</b> → monthlyIncome <span class="dim">(ตัวเลข)</span></span><span class="val">—</span></div>
+            <div class="mrow" data-f="occupation"><i class="dot"></i><span class="path"><b>occupationCode</b> → occupation</span><span class="val">—</span></div>
+          </div></div>
+          <div class="branch"><div class="node gen">
+            <header>สร้างใหม่ทุกครั้ง<small>3 ฟิลด์</small></header>
+            <div class="mrow" data-f="rquId"><i class="dot"></i><span class="path"><b id="dRqRule">สุ่ม 5 ตำแหน่ง</b> → rquId</span><span class="val">—</span></div>
+            <div class="mrow" data-f="applicationId"><i class="dot"></i><span class="path"><b>รัน 3 ตัวท้าย</b> → applicationId</span><span class="val">—</span></div>
+            <div class="mrow" data-f="ncbTransactionId"><i class="dot"></i><span class="path"><b>= applicationId</b> → ncbTransactionId</span><span class="val">—</span></div>
+          </div></div>
+        </div>
+      </div>
+
+      <div class="defs">
+        <div class="def"><h3><i class="dot ok"></i>Map จาก API · 8 ฟิลด์</h3><p>ชื่อ-นามสกุลไทยและอังกฤษ เลขบัตร ที่ทำงาน รายได้ และรหัสอาชีพ แทนค่าตรงจาก response โดย monthlyIncome แปลงเป็นตัวเลขให้</p></div>
+        <div class="def"><h3><i class="dot gen"></i>สร้างใหม่ · 3 ฟิลด์</h3><p>rquId เปลี่ยน 5 ตำแหน่ง (Auto สุ่มทั้งเส้น Mortgage เปลี่ยน 5 ตัวท้าย) ตัวอักษรยังเป็นตัวอักษร ตัวเลขยังเป็นตัวเลข applicationId รัน 3 ตัวท้ายไม่ซ้ำ และ ncbTransactionId ใช้เลขเดียวกัน</p></div>
+        <div class="def"><h3><i class="dot"></i>คงตาม Template · ที่เหลือ</h3><p>channel, saleInfo, workAddress, loanInfo และฟิลด์อื่นใช้ค่าตาม Template ของเส้นที่เลือก ยกเว้นฟิลด์เสริมที่คุณเปิดไว้</p></div>
+      </div>
+
+      <div class="cmp-wrap">
+        <div>
+          <h3>Auto กับ Mortgage<br><span class="mute">ต่างกันตรงไหน</span></h3>
+          <p>อ่านจาก Template ของแต่ละเส้นที่คุณใช้อยู่ ฟิลด์หลักทั้ง 11 ตัว Map เหมือนกัน ส่วนที่ต่างคือโครง Template กับวิธีเปลี่ยน rquId</p>
+        </div>
+        <div class="cmp-scroll"><table class="cmp" id="cmpTable"></table></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="controls">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2>ปรับเลขและฟิลด์<br><span class="mute">ได้จากแผงเดียว</span></h2>
+      </div>
+      <div class="cards">
+        <article class="card">
+          <div class="shot">
+            <div class="shot-h"><span class="micro">rquId</span>
+              <div class="mseg" role="group" aria-label="วิธีเปลี่ยน rquId ของเส้นที่เลือก">
+                <button type="button" data-rule="random" aria-pressed="false">สุ่มทั้งเส้น</button>
+                <button type="button" data-rule="tail" aria-pressed="false">5 ตัวท้าย</button>
+              </div>
+            </div>
+            <div class="rq"><span class="rq-k" id="rqOldK">Template</span><code id="rqOld">—</code></div>
+            <div class="rq"><span class="rq-k">ล่าสุด</span><code class="new" id="rqNew">กด Map เพื่อสุ่ม</code></div>
+            <div class="rq-pos" id="rqPos"></div>
+          </div>
+          <h3>rquId เปลี่ยน 5 ตำแหน่ง แยกตามเส้น</h3>
+          <p>Auto สุ่มตำแหน่งที่จะเปลี่ยนทั่วทั้งเส้น ส่วน Mortgage เปลี่ยน 5 ตัวท้ายเสมอ ตัวอักษรถูกแทนด้วยตัวอักษร ตัวเลขถูกแทนด้วยตัวเลข สลับวิธีของเส้นที่เลือกได้จากปุ่มด้านบน</p>
+          <button class="link" id="btnReroll" type="button">สุ่ม rquId ใหม่ <span>→</span></button>
+        </article>
+        <article class="card">
+          <div class="shot">
+            <div class="shot-h"><span class="micro" id="dotPrefix">applicationId</span><span class="tag" id="dotTag">ว่าง 999</span></div>
+            <div class="dots-box"><canvas id="dots" aria-label="เลข 3 ตัวท้ายที่ใช้แล้ว"></canvas></div>
+            <div class="legend"><span><i class="lg-used"></i>ใช้แล้ว</span><span><i class="lg-cur"></i>เลขล่าสุดของคุณ</span><span><i class="lg-free"></i>ยังว่าง</span><span><i class="lg-mine"></i>ช่วงของคุณ</span></div>
+          </div>
+          <h3>applicationId ไม่ซ้ำทั้งทีม</h3>
+          <p>จุด 1,000 จุดคือเลข 000 ถึง 999 ของ prefix เส้นที่เลือก แถบสว่างคือช่วงเลขของคุณ เว็บจะสุ่มเฉพาะในแถบนี้และข้ามเลขที่เคยใช้แล้ว Auto กับ Mortgage มี prefix คนละชุดจึงนับแยกกัน</p>
+          <a class="link" href="#history">ดูประวัติเลขทั้งหมด <span>→</span></a>
+        </article>
+        <article class="card">
+          <div class="shot">
+            <div class="shot-h"><span class="micro">ฟิลด์เสริม</span><span class="tag" id="optTag">ปิดทั้งหมด</span></div>
+            <div class="tg-list" id="tgList"></div>
+          </div>
+          <h3>เปิดฟิลด์เสริมเมื่อต้องการ</h3>
+          <p>นอกจาก 11 ฟิลด์หลัก เลือก Map ค่าอื่นจาก API เพิ่มได้ ตั้งค่าแยกตามเส้น ฟิลด์ที่ Template ของเส้นนั้นไม่มี เช่น rmID ใน Mortgage จะถูกปิดไว้</p>
+          <button class="link" id="btnOptAll" type="button">เปิดทั้งหมด <span>→</span></button>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="history">
+    <div class="wrap hist">
+      <div class="hist-copy">
+        <h2>ทุกเลขที่สร้าง<br><span class="mute">ไม่ชนกับเพื่อน</span></h2>
+        <p data-cloud>แต่ละคนใช้ช่วงเลขของตัวเอง (0xx ถึง 9xx) เว็บสุ่ม 3 ตัวท้ายเฉพาะในช่วงนั้นและข้ามเลขที่เคยใช้ เลขจึงไม่ชนกันแม้ไม่ได้ล็อกอิน Claude ถ้าล็อกอินด้วยบัญชีที่มีสิทธิ์ เลขจะบันทึกบน cloud ให้ทีมเห็นประวัติร่วมกันด้วย</p>
+        <p data-solo>แต่ละคนใช้ช่วงเลขของตัวเอง (0xx ถึง 9xx) เว็บสุ่ม 3 ตัวท้ายเฉพาะในช่วงนั้นและข้ามเลขที่เคยใช้ เลขจึงไม่ชนกับเพื่อน ประวัติเลขเก็บไว้ในเบราว์เซอร์ของแต่ละคน</p>
+        <ul class="assure">
+          <li><strong>ช่วงเลขของใครของมัน</strong>เลือกครั้งเดียว เว็บจำไว้ในเบราว์เซอร์ที่ใช้</li>
+          <li data-cloud><strong>ไม่ได้ล็อกอินก็ใช้ได้</strong>ประวัติจะอยู่ในเบราว์เซอร์นั้น ถ้าเปลี่ยนเครื่องให้ใช้ช่วงเลขใหม่ที่ยังไม่มีใครใช้</li>
+          <li data-solo><strong>ประวัติอยู่ในเบราว์เซอร์ที่ใช้</strong>ถ้าเปลี่ยนเครื่องหรือล้างข้อมูลเบราว์เซอร์ ให้ใช้ช่วงเลขใหม่ที่ยังไม่มีใครใช้</li>
+          <li><strong>ค้นย้อนหลังได้</strong>ด้วยเลข applicationId, rquId, ชื่อ หรือเลขบัตร</li>
+        </ul>
+      </div>
+      <div class="term">
+        <div class="term-bar">
+          <span class="micro">history.log</span>
+          <span class="dim" id="histCount" style="font-size:12px"></span>
+          <input id="histSearch" type="search" placeholder="ค้นหาเลข ชื่อ เลขบัตร หรือ AUTO / MTG" aria-label="ค้นหาในประวัติ">
+        </div>
+        <div class="term-body" id="histList" aria-live="polite"></div>
+        <div class="h-note" id="histNote"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="faq">
+    <div class="wrap faq">
+      <div class="faq-l">
+        <h2>คำถาม<br><span class="mute">ที่เจอบ่อย</span></h2>
+        <p>ยังติดตรงไหน ทักคุณคอปที่ Prush ITM ได้เลย</p>
+        <div class="orb" aria-hidden="true"></div>
+      </div>
+      <div class="faq-r">
+        <details class="qa"><summary>applicationId ไม่ซ้ำได้อย่างไร<span class="pm" aria-hidden="true"></span></summary>
+          <div class="qa-a"><p>เว็บใช้ทุกหลักของ applicationId ใน Template ยกเว้น 3 ตัวท้ายเป็น prefix แล้วสุ่ม 3 ตัวท้ายเฉพาะในช่วงเลขของคุณ เช่น เลือก 3 จะได้ 300 ถึง 399 และข้ามเลขที่เคยใช้แล้ว ถ้าทุกคนเลือกช่วงไม่ซ้ำกัน เลขจะไม่ชนกันเลย<span data-cloud> ถ้าล็อกอิน Claude ด้วยบัญชีที่มีสิทธิ์ เว็บจะจองเลขบน cloud ซ้ำอีกชั้น</span></p><p>เลข 3 ตัวท้ายของ Template เอง (<code>745</code> ของ Auto และ <code>582</code> ของ Mortgage) จะถูกข้ามไปเสมอ แต่ละเส้นมี prefix ของตัวเองจึงนับเลขแยกกัน และ ncbTransactionId จะได้เลขเดียวกับ applicationId</p></div></details>
+        <details class="qa"><summary>rquId ของสองเส้นเปลี่ยนต่างกันอย่างไร<span class="pm" aria-hidden="true"></span></summary>
+          <div class="qa-a"><p>Auto ใช้ rquId 31 ตัว เว็บสุ่มเลือก 5 ตำแหน่งจากทั้งเส้น ส่วน Mortgage ใช้ rquId 32 ตัว เว็บเปลี่ยน 5 ตัวท้ายเสมอ ทั้งสองแบบ ตำแหน่งที่เป็นตัวอักษรจะได้ตัวอักษรตัวใหม่ ตำแหน่งที่เป็นตัวเลขจะได้ตัวเลขตัวใหม่ และความยาวเท่าเดิม</p><p>ถ้าทีมใช้อีกวิธี สลับได้ที่การ์ด rquId เว็บจะจำแยกตามเส้น</p></div></details>
+        <details class="qa"><summary>Auto กับ Mortgage ใช้ฟิลด์ต่างกันอย่างไร<span class="pm" aria-hidden="true"></span></summary>
+          <div class="qa-a"><p>Mortgage ไม่มี <code>middleName</code>, <code>middleNameEn</code>, <code>receiveEmail</code> และ <code>rmID</code> ใน borrowerInfo ส่วน loanInfo เป็นแบบสินเชื่อบ้าน (<code>Mortgage</code> · <code>NEWHOME</code> · <code>mfDeveloperCode</code>) ไม่มี collateralDetails</p><p>เว็บใช้ Template ของเส้นที่เลือกเป็นโครง จึงไม่เติมฟิลด์ที่เส้นนั้นไม่มี ดูตารางเทียบได้ที่ส่วนแผนผังการ Map</p></div></details>
+        <details class="qa"><summary>ถ้า response มีลูกค้ามากกว่าหนึ่งราย<span class="pm" aria-hidden="true"></span></summary>
+          <div class="qa-a"><p>ใต้ช่องวางจะมีเมนูให้เลือกว่าจะใช้ลูกค้ารายไหน ค่าเริ่มต้นคือรายแรก ถ้า referenceInfo มีหลายรายการ เว็บจะเลือกรายการที่เป็น <code>P1</code> ก่อน</p></div></details>
+        <details class="qa"><summary>ถ้า API ไม่มีค่าบางฟิลด์<span class="pm" aria-hidden="true"></span></summary>
+          <div class="qa-a"><p>เว็บจะใส่ค่าว่างแทน (monthlyIncome จะเป็น 0) และทำสีเหลืองไว้ทั้งในผลลัพธ์และในแผนผัง จะไม่ใช้ค่าเดิมจาก Template เพราะเป็นข้อมูลของลูกค้าคนอื่น</p></div></details>
+        <details class="qa"><summary>rmID กับที่อยู่ตามบัตรมาจากไหน<span class="pm" aria-hidden="true"></span></summary>
+          <div class="qa-a"><p>rmID ใช้ตัวท้ายของ <code>customerKey</code> ยาวเท่ากับ rmID ใน Template (14 หลัก) มีเฉพาะเส้น Auto ส่วนที่อยู่ตามบัตรใช้ <code>primaryAddress</code> ฝั่งภาษาไทย ทั้งสองอย่างเป็นฟิลด์เสริมที่ปิดไว้ ลองเทียบกับระบบจริงก่อนเปิดใช้</p></div></details>
+        <details class="qa" data-solo><summary>ประวัติเลขเก็บไว้ที่ไหน<span class="pm" aria-hidden="true"></span></summary>
+          <div class="qa-a"><p>เก็บในเบราว์เซอร์ของแต่ละคน เว็บนี้ไม่มี server กลาง จึงไม่มีใครเห็นประวัติของคนอื่น ช่วงเลขส่วนตัวเป็นตัวกันไม่ให้เลขชนกับเพื่อน</p><p>ถ้าใช้หลายเครื่องหรือหลายเบราว์เซอร์ ให้เลือกช่วงเลขคนละช่วง และถ้าล้างข้อมูลเบราว์เซอร์ ประวัติเลขจะหายไปด้วย ควรย้ายไปใช้ช่วงใหม่หลังจากนั้น</p></div></details>
+        <details class="qa" data-cloud><summary>ไม่ได้ล็อกอิน Claude ใช้ได้ไหม<span class="pm" aria-hidden="true"></span></summary>
+          <div class="qa-a"><p>ใช้ได้ทุกอย่าง ทั้ง Map ข้อมูล สร้างเลข และคัดลอก JSON ต่างกันแค่ประวัติเลขจะเก็บไว้ในเบราว์เซอร์ของคุณ ไม่ขึ้นบน cloud ให้ทีมเห็น ช่วงเลขส่วนตัวจึงสำคัญ เพราะเป็นตัวกันไม่ให้เลขชนกับเพื่อน</p><p>ถ้าใช้หลายเครื่อง ให้เลือกช่วงเลขคนละช่วงในแต่ละเครื่อง เพราะเครื่องหนึ่งไม่รู้ว่าอีกเครื่องใช้เลขไหนไปแล้ว</p></div></details>
+        <details class="qa"><summary>รหัสเข้าเว็บกันอะไรได้บ้าง<span class="pm" aria-hidden="true"></span></summary>
+          <div class="qa-a"><p>กันคนที่บังเอิญได้ลิงก์ไปไม่ให้ใช้งานได้ทันที แต่ไม่ใช่ระบบความปลอดภัย เพราะเบราว์เซอร์เป็นคนตรวจรหัส คนที่เปิดดูโค้ดของหน้าเว็บข้ามไปได้ จึงใช้กับข้อมูลทดสอบเท่านั้น ใส่รหัสถูกครั้งเดียว เบราว์เซอร์นั้นจะจำไว้ กด “ล็อกหน้านี้” ท้ายหน้าเพื่อให้ถามรหัสอีกครั้ง</p></div></details>
+        <details class="qa"><summary>เว็บยิง Workflow ให้เลยได้ไหม<span class="pm" aria-hidden="true"></span></summary>
+          <div class="qa-a"><p>ไม่ได้ เว็บนี้เตรียม JSON ให้คัดลอกไปยิงใน Postman เอง เพราะระบบ SIT อยู่ในเครือข่ายภายใน เว็บไม่ได้ต่อกับ API หรือ Workflow ใด ๆ</p></div></details>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec sec-cta">
+    <div class="wrap">
+      <div class="sunset">
+        <div class="sun-mark"><svg aria-hidden="true"><use href="#mark"/></svg></div>
+        <h2>ลูกค้าคนถัดไปรออยู่<br><span>วาง แล้วคัดลอกได้เลย</span></h2>
+        <div class="cta-row">
+          <button class="btn btn-primary" id="ctaNew" type="button">Map ข้อมูลใหม่</button>
+          <button class="btn btn-dark" id="ctaCopy" type="button">คัดลอกผลลัพธ์ล่าสุด</button>
+        </div>
+        <p class="fine">เลขอยู่ในช่วงของคุณ จึงไม่ชนกับเพื่อน</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="wrap foot">
+  <div class="foot-grid">
+    <div>
+      <a class="brand" href="#top"><svg aria-hidden="true"><use href="#mark"/></svg><span>Easy-Mapping Workflow</span></a>
+      <p class="foot-blurb">เครื่องมือเตรียม Workflow Request จากผล searchCustomerProfile สำหรับทีมทดสอบ</p>
+    </div>
+    <div><h4>เครื่องมือ</h4><ul><li><a href="#tool">Mapping console</a></li><li><a href="#map">แผนผังการ Map</a></li><li><a href="#controls">ฟิลด์เสริม</a></li></ul></div>
+    <div><h4>ข้อมูล</h4><ul><li><a href="#history">ประวัติเลข</a></li><li><a href="#faq">คำถามที่เจอบ่อย</a></li><li><a href="#tplBox" id="footTpl">แก้ Template</a></li></ul></div>
+    <div><h4>Workflow</h4><ul><li>N1002 · ENET · SmartCredit</li><li>AutoGroup · สินเชื่อรถ</li><li>MortgageGroup · สินเชื่อบ้าน</li></ul></div>
+  </div>
+  <div class="legal">
+    <a class="brand" href="#top"><svg aria-hidden="true"><use href="#mark"/></svg><span>Easy-Mapping</span></a>
+    <span>© 2026 Prush ITM</span>
+    <span>ใช้กับข้อมูลทดสอบเท่านั้น</span>
+    <button class="btn-txt" id="btnLock" type="button">ล็อกหน้านี้</button>
+  </div>
+  <p class="disclaimer">เว็บนี้ไม่ได้เรียก API หรือส่ง Workflow ให้ เพียงเตรียม JSON ให้คุณคัดลอกไปใช้เอง <span data-cloud>ข้อมูลที่บันทึกบน cloud มีเฉพาะประวัติเลขที่สร้าง ได้แก่ เส้นที่ใช้, applicationId, rquId, ชื่อลูกค้า, เลขบัตร และผู้สร้าง เพื่อให้ทีมตรวจย้อนหลังได้</span><span data-solo>ข้อมูลที่วางและประวัติเลขที่สร้างอยู่ในเบราว์เซอร์ของคุณเท่านั้น ไม่ได้ส่งไปที่ใด</span></p>
+</footer>
+
+<div class="toast" id="toast" role="status" aria-live="polite" hidden><i></i><span id="toastText"></span></div>
+
+<script>
+(() => {
+'use strict';
+const $ = s => document.querySelector(s);
+
+/* ── Default data ─────────────────────────────────── */
+const SAMPLE_API = {"data":{"searchCustomerProfile":{"status":{"code":"CUS-1000","description":"Success"},"data":[{"referenceInfo":[{"referenceTypeCode":"P1","referenceNumber":"4901047796249"}],"nameInfo":{"thaiFullTitle":"นาย","thaiFirstName":"วุฒิ","thaiMiddleName":"","thaiLastName":"คณานุรักษ์","thaiComlTitle":null,"thaiComlName":null,"englishFullTitle":"MISTER","englishFirstName":"JOHN","englishMiddleName":"","englishLastName":"FITZGERALD","englishComlTitle":null,"englishComlName":null},"customerKey":"001400000000000000000024157376","customerKyc":"100","monitorCode":"","customerSegment":null,"kycProduct":"","kycChannel":"","genderCode":"M","maritalStatusCode":"U","isic":null,"businessUnitOwnerCode":"3720","customerTypeCode":"21","spouseName":"","birthDate":"1996-08-10T07:00:00+07:00","employmentInfo":{"workStartDate":null,"workEndDate":null,"workplace":"บริษัท ซีเฟรชอินดัสตรี จำกัด (มหาชน)","workPositionCode":"","workSelfEmpInd":"","occupationCode":"24","actualIncome":"50000","incomeRangeCode":"","occupationDetail":"","isicCode":"","updatedUser":null},"primaryAddress":{"systemSeqNumber":"001","addedDate":"2026-11-02T07:00:00+07:00","formatCode":"STD","usageCode":"H","textCountry":"THAILAND","mailCode":"Y","isoAddressCountryCode":"TH","addressCountry":"","addressProvinceCode":"","addressOwnerCode":"1","thaiAddressNumber":"209/128","thaiVillage":"8","thaiMoo":"2","thaiAlley":"","thaiLane":"7","thaiStreet":"บ้านนาดี","thaiSubDistrict":"บางละมุง","thaiDistrict":"BANG LAMUNG","thaiProvince":"CHON BURI","thaiAddressFloor":"","thaiAddressUnit":"","thaiZipCode":"20150","englishAddressNumber":"SENA HOUSE","englishVillage":"8","englishMoo":"2","englishLane":"7","englishStreet":"BANNADEE","englishSubDistrict":"BANG LAMUNG","englishDistrict":"BANG LAMUNG","englishProvince":"CHON BURI","englishAddressFloor":"","englishAddressUnit":"","englishZipCode":"20150","createdTimestamp":"2026-11-02T07:00:00+07:00","lastMaintDateTime":"2026-11-02T10:34:44+07:00"}}],"totalCount":1,"limit":5,"offset":0}}};
+const AUTO_TPL = {"channel":"ENET","rquId":"7t9f880fdead4qa346f761465f85631","transactionCode":"N1002","applicationId":"202624102601745","applicationClass":"SmartCredit","applicationGroup":"AutoGroup","saleInfo":[{"staffId":"20017","staffType":"Owner"}],"borrowerInfo":[{"ncbConsent":"Y","ncbTransactionId":"202624102601745","title":"น.ส.","titleEn":"MISS","firstName":"พรเบญญา","firstNameEn":"KIRSTEN","lastName":"โพธิสัตย์","lastNameEn":"FISHER","middleName":"","middleNameEn":"","receiveEmail":"sit_nleads_auto_new_smartcredit@maildev.scb.local","maritalStatus":"U","dateOfBirth":"1997-03-27","nationality":"TH","referenceType":"P1","referenceNo":"4735677780339","referenceCountry":"TH","gender":"F","mobileNumber":"0891237654","customerType":"P","rmID":"00000024157325","identifiedAddress":{"addressNo":"77","road":"วงศ์สว่าง11","tambon":"วงศ์สว่าง","amphur":"บางซื่อ","province":"กรุงเทพมหานคร","zipcode":"10900","country":"TH"},"workAddress":{"addressNo":"7","floor":"2","road":"กำแพงเพชร2","tambon":"จตุจักร","amphur":"จตุจักร","province":"กรุงเทพมหานคร","zipcode":"10900","country":"TH"},"employmentInfo":{"companyNameOther":"บริษัท จี เจ สตีล จำกัด (มหาชน)","monthlyIncome":50000,"sourceOfIncome":"TH","occupation":"24"}}],"loanInfo":{"productType":"0001","subProductType":"0001","developerCode":"X015","loanProvince":"กรุงเทพมหานคร","collateralDetails":{"auto":[{"brand":"TOY","model":"CAM","subModel":"24TOYCAM10","yearOfModel":2024}]}}};
+const MORT_TPL = {"channel":"ENET","rquId":"4e602be5c928441ba3fda25ca53g45jr","transactionCode":"N1002","applicationId":"202610078029582","applicationClass":"SmartCredit","applicationGroup":"MortgageGroup","saleInfo":[{"staffId":"20017","staffType":"Owner"}],"borrowerInfo":[{"ncbConsent":"Y","ncbTransactionId":"202610078029582","title":"น.ส.","titleEn":"MISS","firstName":"ธัญญามาศ","firstNameEn":"HOLLY","lastName":"ทวนทอง","lastNameEn":"CAREY","maritalStatus":"U","dateOfBirth":"1997-03-27","nationality":"TH","referenceType":"P1","referenceNo":"1396709959461","referenceCountry":"TH","gender":"F","mobileNumber":"0897777777","customerType":"P","identifiedAddress":{"addressNo":"20","road":"รัชดาภิเษก","tambon":"จตุจักร","amphur":"จตุจักร","province":"กรุงเทพมหานคร","zipcode":"10900","country":"TH"},"workAddress":{"addressNo":"20","floor":"20","road":"รัชดาภิเษก","tambon":"จตุจักร","amphur":"จตุจักร","province":"กรุงเทพมหานคร","zipcode":"10900","country":"TH"},"employmentInfo":{"companyNameOther":"บริษัท ฝาจีบ จำกัด (มหาชน)","monthlyIncome":100000,"sourceOfIncome":"TH","occupation":"24"}}],"loanInfo":{"productType":"Mortgage","subProductType":"NEWHOME","mfDeveloperCode":"0001","loanProvince":"กรุงเทพมหานคร"}};
+const SAMPLE_TEXT = JSON.stringify(SAMPLE_API, null, 4);
+
+/* ── Small helpers ────────────────────────────────── */
+const LS = {
+  get(k, d){ try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch { return d; } },
+  set(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); } catch {} }
+};
+const rint = n => { const a = new Uint32Array(1); crypto.getRandomValues(a); return a[0] % n; };
+const shuffle = a => { for (let i = a.length - 1; i > 0; i--) { const j = rint(i + 1); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const pad3 = n => String(n).padStart(3, '0');
+const debounce = (fn, ms) => { let t; return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); }; };
+const TAB = 'tab-' + Date.now().toString(36) + '-' + rint(1e9).toString(36);
+const isBlank = v => v == null || v === '';
+
+/* ── Field map ────────────────────────────────────── */
+const B = ['borrowerInfo', 0];
+const pickRef = c => {
+  const a = c && c.referenceInfo;
+  if (!Array.isArray(a) || !a.length) return null;
+  return a.find(r => r && r.referenceTypeCode === 'P1') || a[0];
+};
+const REQUIRED = [
+  { f:'firstName',        path:[...B,'firstName'],   src:'nameInfo.thaiFirstName',     get:c => c?.nameInfo?.thaiFirstName },
+  { f:'firstNameEn',      path:[...B,'firstNameEn'], src:'nameInfo.englishFirstName',  get:c => c?.nameInfo?.englishFirstName },
+  { f:'lastName',         path:[...B,'lastName'],    src:'nameInfo.thaiLastName',      get:c => c?.nameInfo?.thaiLastName },
+  { f:'lastNameEn',       path:[...B,'lastNameEn'],  src:'nameInfo.englishLastName',   get:c => c?.nameInfo?.englishLastName },
+  { f:'referenceNo',      path:[...B,'referenceNo'], src:'referenceInfo[].referenceNumber', get:c => pickRef(c)?.referenceNumber },
+  { f:'companyNameOther', path:[...B,'employmentInfo','companyNameOther'], src:'employmentInfo.workplace', get:c => c?.employmentInfo?.workplace },
+  { f:'monthlyIncome',    path:[...B,'employmentInfo','monthlyIncome'],    src:'employmentInfo.actualIncome', get:c => c?.employmentInfo?.actualIncome, type:'number' },
+  { f:'occupation',       path:[...B,'employmentInfo','occupation'],       src:'employmentInfo.occupationCode', get:c => c?.employmentInfo?.occupationCode },
+];
+const PA = c => c?.primaryAddress || {};
+const OPTIONAL = [
+  { id:'title',   label:'คำนำหน้า', fields:[
+      { f:'title',   path:[...B,'title'],   src:'nameInfo.thaiFullTitle',    get:c => c?.nameInfo?.thaiFullTitle },
+      { f:'titleEn', path:[...B,'titleEn'], src:'nameInfo.englishFullTitle', get:c => c?.nameInfo?.englishFullTitle } ] },
+  { id:'middle',  label:'ชื่อกลาง', fields:[
+      { f:'middleName',   path:[...B,'middleName'],   src:'nameInfo.thaiMiddleName',    get:c => c?.nameInfo?.thaiMiddleName, allowEmpty:true },
+      { f:'middleNameEn', path:[...B,'middleNameEn'], src:'nameInfo.englishMiddleName', get:c => c?.nameInfo?.englishMiddleName, allowEmpty:true } ] },
+  { id:'gender',  label:'เพศ', fields:[ { f:'gender', path:[...B,'gender'], src:'genderCode', get:c => c?.genderCode } ] },
+  { id:'dob',     label:'วันเกิด', fields:[ { f:'dateOfBirth', path:[...B,'dateOfBirth'], src:'birthDate (YYYY-MM-DD)',
+      get:c => { const s = c?.birthDate; return (typeof s === 'string' && /^\d{4}-\d{2}-\d{2}/.test(s)) ? s.slice(0, 10) : s; } } ] },
+  { id:'marital', label:'สถานภาพสมรส', fields:[ { f:'maritalStatus', path:[...B,'maritalStatus'], src:'maritalStatusCode', get:c => c?.maritalStatusCode } ] },
+  { id:'refType', label:'ประเภทเอกสาร', fields:[ { f:'referenceType', path:[...B,'referenceType'], src:'referenceInfo[].referenceTypeCode', get:c => pickRef(c)?.referenceTypeCode } ] },
+  { id:'rm',      label:'rmID', fields:[ { f:'rmID', path:[...B,'rmID'], src:'customerKey (ตัวท้าย)',
+      get:(c, ctx) => { const k = c?.customerKey; if (isBlank(k)) return k; const n = ctx.rmLen || 14; return String(k).slice(-n); } } ] },
+  { id:'addr',    label:'ที่อยู่ตามบัตร', fields:[
+      { f:'identifiedAddress.addressNo', path:[...B,'identifiedAddress','addressNo'], src:'primaryAddress.thaiAddressNumber', get:c => PA(c).thaiAddressNumber },
+      { f:'identifiedAddress.road',      path:[...B,'identifiedAddress','road'],      src:'primaryAddress.thaiStreet',        get:c => PA(c).thaiStreet, allowEmpty:true },
+      { f:'identifiedAddress.tambon',    path:[...B,'identifiedAddress','tambon'],    src:'primaryAddress.thaiSubDistrict',   get:c => PA(c).thaiSubDistrict },
+      { f:'identifiedAddress.amphur',    path:[...B,'identifiedAddress','amphur'],    src:'primaryAddress.thaiDistrict',      get:c => PA(c).thaiDistrict },
+      { f:'identifiedAddress.province',  path:[...B,'identifiedAddress','province'],  src:'primaryAddress.thaiProvince',      get:c => PA(c).thaiProvince },
+      { f:'identifiedAddress.zipcode',   path:[...B,'identifiedAddress','zipcode'],   src:'primaryAddress.thaiZipCode',       get:c => PA(c).thaiZipCode },
+      { f:'identifiedAddress.country',   path:[...B,'identifiedAddress','country'],   src:'primaryAddress.isoAddressCountryCode', get:c => PA(c).isoAddressCountryCode } ] },
+];
+
+/* ── State ────────────────────────────────────────── */
+const GROUPS = {
+  auto:     { name:'Auto Group',     th:'สินเชื่อรถ',   short:'AUTO', appGroup:'AutoGroup',     rule:'random', tplText: JSON.stringify(AUTO_TPL, null, 2) },
+  mortgage: { name:'Mortgage Group', th:'สินเชื่อบ้าน', short:'MTG',  appGroup:'MortgageGroup', rule:'tail',   tplText: JSON.stringify(MORT_TPL, null, 2) },
+};
+const isGroup = id => Object.prototype.hasOwnProperty.call(GROUPS, id);
+{ // v1 kept one (Auto) template and one set of toggles
+  const oldOpts = LS.get('emw.opts', null);
+  if (oldOpts && LS.get('emw.opts.auto', null) == null) LS.set('emw.opts.auto', oldOpts);
+  try { localStorage.removeItem('emw.opts'); localStorage.removeItem('emw.tpl'); } catch {}
+}
+const GS = {};
+for (const id of Object.keys(GROUPS)) {
+  const saved = LS.get('emw.tpl.' + id, null), so = LS.get('emw.opts.' + id, null) || {}, rule = LS.get('emw.rq.' + id, null);
+  const st = GS[id] = {
+    text: typeof saved === 'string' ? saved : GROUPS[id].tplText, tpl:null, err:'', ids:null,
+    opts: Object.fromEntries(OPTIONAL.map(o => [o.id, !!so[o.id]])),
+    rule: rule === 'random' || rule === 'tail' ? rule : GROUPS[id].rule,
+  };
+  const r = parseTpl(st.text); if (r.err) st.err = r.err; else st.tpl = r.tpl;
+}
+const savedGrp = LS.get('emw.group', 'auto');
+const S = {
+  mode:'connecting', modeNote:'', db:null, user:null, uid:null, synced:false,
+  team:[], local: LS.get('emw.local', []),
+  grp: isGroup(savedGrp) ? savedGrp : 'auto',
+  block: (b => Number.isInteger(b) && b >= 0 && b <= 9 ? b : null)(LS.get('emw.block', null)),
+  parsed:null, custIdx:0, built:null, busy:false,
+};
+// Template, toggles and the last generated ids all belong to the selected group
+Object.defineProperties(S, {
+  tpl:    { get: () => GS[S.grp].tpl },
+  tplErr: { get: () => GS[S.grp].err },
+  opts:   { get: () => GS[S.grp].opts },
+  ids:    { get: () => GS[S.grp].ids, set: v => { GS[S.grp].ids = v; } },
+});
+if (!Array.isArray(S.local)) S.local = [];
+
+/* ── Parsing ──────────────────────────────────────── */
+function jsonErr(e, text){
+  const m = String(e && e.message || '');
+  let line, col;
+  const lc = m.match(/line (\d+) column (\d+)/i);
+  const pos = m.match(/position (\d+)/i);
+  if (lc) { line = +lc[1]; col = +lc[2]; }
+  else if (pos) { const before = text.slice(0, +pos[1]).split('\n'); line = before.length; col = before[before.length - 1].length + 1; }
+  return line ? `JSON ไม่ถูกต้องที่บรรทัด ${line} คอลัมน์ ${col}` : 'JSON ไม่ถูกต้อง';
+}
+function findCustomers(o, depth){
+  if (!o || typeof o !== 'object' || depth > 8) return null;
+  if (Array.isArray(o)) {
+    if (o.length && o.every(x => x && typeof x === 'object' && x.nameInfo)) return o;
+    for (const x of o) { const r = findCustomers(x, depth + 1); if (r) return r; }
+    return null;
+  }
+  if (o.nameInfo && typeof o.nameInfo === 'object') return [o];
+  for (const k of Object.keys(o)) { const r = findCustomers(o[k], depth + 1); if (r) return r; }
+  return null;
+}
+function parseApi(text){
+  const t = text.trim();
+  if (!t) return { state:'empty' };
+  let obj;
+  try { obj = JSON.parse(t); } catch (e) { return { state:'error', msg: jsonErr(e, t) + ' — ตรวจว่าคัดลอก response มาครบทั้งก้อน' }; }
+  const scp = obj?.data?.searchCustomerProfile;
+  let list = Array.isArray(scp?.data) ? scp.data : null;
+  const status = scp?.status || null;
+  if (!list) list = findCustomers(obj, 0);
+  if (!list || !list.length) {
+    const st = status ? ` (${status.code || ''} ${status.description || ''})` : '';
+    return { state:'error', msg:'ไม่พบข้อมูลลูกค้าใน response' + st };
+  }
+  return { state:'ok', list, status };
+}
+function parseTpl(text){
+  let o;
+  try { o = JSON.parse(text); } catch (e) { return { err: 'Template: ' + jsonErr(e, text) }; }
+  if (!o || typeof o !== 'object' || Array.isArray(o)) return { err:'Template ต้องเป็น JSON object' };
+  if (typeof o.rquId !== 'string' || !o.rquId) return { err:'Template ไม่มี rquId' };
+  if (!/^\d{4,}$/.test(String(o.applicationId ?? ''))) return { err:'applicationId ใน Template ต้องเป็นตัวเลขอย่างน้อย 4 หลัก' };
+  if (!Array.isArray(o.borrowerInfo) || !o.borrowerInfo[0] || typeof o.borrowerInfo[0] !== 'object') return { err:'Template ไม่มี borrowerInfo[0]' };
+  return { tpl:o };
+}
+const appParts = tpl => { const id = String(tpl.applicationId); return { prefix:id.slice(0, -3), suffix:id.slice(-3) }; };
+const currentCust = () => S.parsed && S.parsed.state === 'ok' ? (S.parsed.list[S.custIdx] || S.parsed.list[0]) : null;
+const custKey = c => c ? String(c.customerKey || pickRef(c)?.referenceNumber || JSON.stringify(c.nameInfo || {})) : '';
+const custName = c => [c?.nameInfo?.thaiFirstName, c?.nameInfo?.thaiLastName].filter(Boolean).join(' ') || [c?.nameInfo?.englishFirstName, c?.nameInfo?.englishLastName].filter(Boolean).join(' ') || 'ไม่มีชื่อ';
+
+/* ── Build ────────────────────────────────────────── */
+function setPath(o, path, v){
+  let cur = o;
+  for (let i = 0; i < path.length - 1; i++) {
+    const k = path[i];
+    if (cur[k] == null || typeof cur[k] !== 'object') cur[k] = typeof path[i + 1] === 'number' ? [] : {};
+    cur = cur[k];
+  }
+  cur[path[path.length - 1]] = v;
+}
+function coerce(fd, raw){
+  if (fd.type === 'number') {
+    if (isBlank(raw)) return { v:0, st:'miss' };
+    const n = Number(String(raw).replace(/,/g, '').trim());
+    return Number.isFinite(n) ? { v:n, st:'ok' } : { v:String(raw), st:'miss' };
+  }
+  if (raw == null) return { v:'', st:'miss' };
+  if (raw === '') return { v:'', st: fd.allowEmpty ? 'ok' : 'miss' };
+  return { v: typeof raw === 'object' ? JSON.stringify(raw) : String(raw), st:'ok' };
+}
+function rquHtml(v, changed){
+  const set = new Set(changed || []);
+  return '"' + v.split('').map((ch, i) => set.has(i) ? '<b>' + esc(ch) + '</b>' : esc(ch)).join('') + '"';
+}
+function buildWorkflow(tpl, c, opts, ids){
+  const out = JSON.parse(JSON.stringify(tpl));
+  const marks = new Map();
+  const report = {};
+  const tplB = tpl.borrowerInfo[0];
+  const ctx = { rmLen: typeof tplB.rmID === 'string' && tplB.rmID.length ? tplB.rmID.length : 14 };
+  const b = out.borrowerInfo[0];
+  if (ids) {
+    out.rquId = ids.rquId; out.applicationId = ids.applicationId; b.ncbTransactionId = ids.applicationId;
+    marks.set('rquId', { kind:'gen', title: ids.rule === 'tail' ? 'เปลี่ยน 5 ตัวท้าย' : 'สุ่มใหม่ 5 ตำแหน่ง', html:'<span class="j-s">' + rquHtml(ids.rquId, ids.rquChanged) + '</span>' });
+    marks.set('applicationId', { kind:'gen', title:'รัน 3 ตัวท้าย ไม่ซ้ำ' });
+    marks.set('borrowerInfo.0.ncbTransactionId', { kind:'gen', title:'= applicationId' });
+  } else {
+    const p = appParts(tpl).prefix + '···';
+    marks.set('rquId', { kind:'pend', title:'จะสุ่มใหม่เมื่อกด Map' });
+    marks.set('applicationId', { kind:'pend', title:'จะรันเลขใหม่เมื่อกด Map', html:'<span class="j-s">' + esc(JSON.stringify(p)) + '</span>' });
+    marks.set('borrowerInfo.0.ncbTransactionId', { kind:'pend', title:'= applicationId', html:'<span class="j-s">' + esc(JSON.stringify(p)) + '</span>' });
+  }
+  let miss = 0, mapped = 0;
+  const apply = fd => {
+    const { v, st } = coerce(fd, fd.get(c, ctx));
+    setPath(out, fd.path, v);
+    marks.set(fd.path.join('.'), { kind: st === 'ok' ? 'map' : 'miss', title: (st === 'ok' ? 'จาก ' : 'API ไม่มีค่า: ') + fd.src });
+    report[fd.f] = { v, st };
+    if (st === 'ok') mapped++; else miss++;
+  };
+  REQUIRED.forEach(apply);
+  OPTIONAL.forEach(g => { if (opts[g.id]) g.fields.forEach(fd => { if (hasPath(tpl, fd.path)) apply(fd); }); });
+  return { out, marks, report, miss, mapped };
+}
+function renderJSON(v, path, ind, marks){
+  const pad = '  '.repeat(ind);
+  if (Array.isArray(v)) {
+    if (!v.length) return '[]';
+    return '[\n' + v.map((x, i) => pad + '  ' + renderJSON(x, path.concat(i), ind + 1, marks)).join(',\n') + '\n' + pad + ']';
+  }
+  if (v && typeof v === 'object') {
+    const ks = Object.keys(v);
+    if (!ks.length) return '{}';
+    return '{\n' + ks.map(k => pad + '  <span class="j-k">' + esc(JSON.stringify(k)) + '</span>: ' + renderJSON(v[k], path.concat(k), ind + 1, marks)).join(',\n') + '\n' + pad + '}';
+  }
+  let s;
+  if (typeof v === 'string') s = '<span class="j-s">' + esc(JSON.stringify(v)) + '</span>';
+  else if (typeof v === 'number') s = '<span class="j-n">' + v + '</span>';
+  else if (typeof v === 'boolean') s = '<span class="j-b">' + v + '</span>';
+  else s = '<span class="j-z">null</span>';
+  const m = marks.get(path.join('.'));
+  if (m) s = '<mark class="hl hl-' + m.kind + '" title="' + esc(m.title) + '">' + (m.html || s) + '</mark>';
+  return s;
+}
+
+/* ── Records / uniqueness ─────────────────────────── */
+function allRecords(){
+  const map = new Map();
+  for (const r of S.local) if (r && r.applicationId) map.set(r.applicationId, { ...r, local:true });
+  if (S.mode === 'team' || S.mode === 'readonly') for (const r of S.team) map.set(r.applicationId, r);
+  return [...map.values()];
+}
+function usedSuffixes(prefix){
+  const s = new Set();
+  for (const r of allRecords()) {
+    const id = String(r.applicationId);
+    if (id.length === prefix.length + 3 && id.startsWith(prefix)) s.add(id.slice(-3));
+  }
+  return s;
+}
+function hasPath(o, path){
+  let cur = o;
+  for (const k of path) { if (cur == null || typeof cur !== 'object' || !(k in cur)) return false; cur = cur[k]; }
+  return true;
+}
+const optAvail = (o, tpl) => !!tpl && o.fields.some(f => hasPath(tpl, f.path));
+function grpOf(r){
+  if (r && isGroup(r.group)) return r.group;
+  const p = String(r && r.applicationId || '').slice(0, -3);
+  return Object.keys(GS).find(id => GS[id].tpl && appParts(GS[id].tpl).prefix === p) || null;
+}
+// 'random': any 5 alphanumeric positions; 'tail': the last 5 alphanumeric positions
+function rqPositions(base, rule){
+  const alnum = base.split('').map((ch, i) => /[A-Za-z0-9]/.test(ch) ? i : -1).filter(i => i >= 0);
+  return rule === 'tail' ? alnum.slice(-5) : shuffle(alnum).slice(0, 5).sort((a, b) => a - b);
+}
+function mutateRquId(base, avoid, rule){
+  const L = 'abcdefghijklmnopqrstuvwxyz', D = '0123456789';
+  let last;
+  for (let t = 0; t < 25; t++) {
+    const ch = base.split('');
+    const idx = rqPositions(base, rule);
+    for (const i of idx) {
+      const c = ch[i]; const isD = /[0-9]/.test(c); const pool = isD ? D : L; const up = !isD && c !== c.toLowerCase();
+      let n; do { n = pool[rint(pool.length)]; } while (n === c.toLowerCase());
+      ch[i] = up ? n.toUpperCase() : n;
+    }
+    last = { value: ch.join(''), changed: idx };
+    if (!avoid.has(last.value)) return last;
+  }
+  return last;
+}
+const blockSuffixes = b => [...Array(100).keys()].map(i => pad3(b * 100 + i));
+async function claimTeam(prefix, allowed, rec){
+  const pool = shuffle(allowed.slice());
+  if (!pool.length) throw { code:'exhausted' };
+  for (const s of pool.slice(0, 40)) {
+    const id = prefix + s;
+    const ref = S.db.doc('apps/' + id);
+    let got = true;
+    try { const l = await ref.acquire({ holder: TAB, ttlMs: 6000 }); got = !!(l && l.acquired); }
+    catch (e) { if (e && (e.code === 'capability_removed' || e.code === 'capability_disabled')) got = true; else throw e; }
+    if (!got) continue;
+    const snap = await ref.get();
+    const d = snap.exists ? snap.data() : null;
+    if (d && d.applicationId) continue;
+    await ref.set({ ...rec, applicationId:id, prefix, suffix:s });
+    return id;
+  }
+  throw { code:'exhausted' };
+}
+function claimLocal(prefix, allowed, rec){
+  const pool = allowed;
+  if (!pool.length) throw { code:'exhausted' };
+  const s = pool[rint(pool.length)];
+  const r = { ...rec, applicationId: prefix + s, prefix, suffix:s };
+  S.local.push(r);
+  if (S.local.length > 3000) S.local = S.local.slice(-3000);
+  LS.set('emw.local', S.local);
+  return r.applicationId;
+}
+async function claimIds(c, g){
+  await Promise.race([cloudReady, sleep(11000)]);
+  const st = GS[g], tpl = st.tpl;
+  const { prefix, suffix } = appParts(tpl);
+  const recs = allRecords();
+  const avoid = usedSuffixes(prefix); avoid.add(suffix);
+  const allowed = blockSuffixes(S.block).filter(s => !avoid.has(s));
+  const rq = mutateRquId(String(tpl.rquId), new Set(recs.map(r => r.rquId)), st.rule);
+  const ref = pickRef(c);
+  const rec = {
+    group: g,
+    rquId: rq.value,
+    referenceNo: String(ref?.referenceNumber ?? ''),
+    firstName: String(c?.nameInfo?.thaiFirstName ?? ''),
+    lastName: String(c?.nameInfo?.thaiLastName ?? ''),
+    by: S.uid || null,
+    createdAt: Date.now(),
+  };
+  let appId = null, where = 'local';
+  if (S.mode === 'team' && S.db) {
+    for (let attempt = 0; attempt < 2 && !appId; attempt++) {
+      try { appId = await claimTeam(prefix, allowed, rec); where = 'team'; }
+      catch (e) {
+        const code = e && e.code;
+        if (code === 'exhausted') throw e;
+        if (code === 'unavailable' && attempt === 0) { await sleep(300 + rint(500)); continue; }
+        if (code === 'invalid_argument') setMode('readonly', 'บัญชีนี้มีสิทธิ์แค่ดู จึงบันทึกเลขลงทีมไม่ได้');
+        else setMode('local', 'บันทึกลงทีมไม่ได้ (' + (code || 'error') + ')');
+        toast('บันทึกเลขลงทีมไม่ได้ ใช้การกันซ้ำในเครื่องนี้แทน', 'warn');
+        break;
+      }
+    }
+  }
+  if (!appId) { appId = claimLocal(prefix, allowed, rec); where = 'local'; }
+  return { group: g, rule: st.rule, rquId: rq.value, rquChanged: rq.changed, rquBase: String(tpl.rquId), applicationId: appId, prefix, suffix: appId.slice(-3), custKey: custKey(c), where };
+}
+
+/* ── Cloud (db + user) ────────────────────────────── */
+function setMode(mode, note){
+  S.mode = mode; S.modeNote = note || '';
+  const pill = $('#syncPill');
+  pill.dataset.mode = mode;
+  const txt = { connecting:'กำลังเชื่อมต่อ…', team:'ซิงก์กับทีม', readonly:'ดูประวัติทีมได้', local:'ไม่ได้ซิงก์' }[mode];
+  $('#syncText').textContent = txt;
+  pill.title = note || ({ team:'เลขที่สร้างจะบันทึกให้ทุกคนในทีมเห็น', local:'ประวัติอยู่ในเบราว์เซอร์นี้ ช่วงเลขส่วนตัวกันไม่ให้ชนกับเพื่อน', readonly:'อ่านประวัติทีมได้ แต่เลขใหม่บันทึกในเครื่องนี้' }[mode] || '');
+  renderHistory(); renderMeta();
+}
+async function initCloud(){
+  const C = window.claude;
+  if (!C || typeof C.use !== 'function') { setMode('local', 'ประวัติเลขเก็บไว้ในเบราว์เซอร์นี้เท่านั้น'); return; }
+  let db = null, user = null;
+  try { [db, user] = await Promise.all([C.use('db').catch(() => null), C.use('user').catch(() => null)]); } catch {}
+  S.user = user;
+  if (user) { try { S.uid = await user.id(); } catch {} }
+  if (!db) { setMode('local', 'ไม่ได้ล็อกอิน Claude จึงเห็นเฉพาะเลขที่สร้างจากเบราว์เซอร์นี้ ช่วงเลขของคุณยังกันไม่ให้ชนกับเพื่อน'); return; }
+  S.db = db;
+  let canWrite = null;
+  if (user) { try { canWrite = await user.can('data.write'); } catch {} }
+  setMode(canWrite === false ? 'readonly' : 'team', canWrite === false ? 'บัญชีนี้มีสิทธิ์แค่ดู: เห็นประวัติทีม แต่เลขใหม่จะกันซ้ำในเครื่องนี้' : '');
+  const timer = setTimeout(() => { if (!S.synced) { S.modeNote = 'ยังดึงประวัติทีมไม่ได้ ข้อมูลอาจไม่เป็นปัจจุบัน'; renderHistory(); } }, 10000);
+  try {
+    db.collection('apps').orderBy('createdAt', 'desc').limit(1000).onSnapshot(snap => {
+      S.team = snap.docs.map(d => d.data()).filter(r => r && r.applicationId);
+      if (!snap.metadata.fromCache && !S.synced) { S.synced = true; clearTimeout(timer); if (S.mode === 'team') S.modeNote = ''; }
+      renderHistory(); renderMeta();
+    }, err => {
+      clearTimeout(timer);
+      setMode('local', 'การเชื่อมต่อข้อมูลทีมหลุด (' + (err && err.code || 'error') + ') จึงกันเลขซ้ำเฉพาะเครื่องนี้');
+    });
+  } catch (e) { clearTimeout(timer); setMode('local', 'อ่านข้อมูลทีมไม่ได้'); }
+}
+
+/* ── Rendering ────────────────────────────────────── */
+const apiEl = $('#apiInput'), tplEl = $('#tplInput'), outEl = $('#output');
+
+function renderApiFoot(){
+  const foot = $('#apiFoot'); foot.replaceChildren();
+  const led = $('#apiLed'); led.className = 'led';
+  const p = S.parsed;
+  const st = (cls, text) => { const s = document.createElement('span'); s.className = 'st ' + cls; s.textContent = text; foot.append(s); return s; };
+  const plain = text => { const s = document.createElement('span'); s.textContent = text; foot.append(s); return s; };
+  if (!p || p.state === 'empty') { plain('วาง response แล้วระบบจะ Map ให้ทันที'); return; }
+  if (p.state === 'error') { led.classList.add('err'); st('err', p.msg); return; }
+  led.classList.add('ok');
+  st('ok', 'พบลูกค้า ' + p.list.length + ' ราย');
+  if (p.status) {
+    const ok = !p.status.code || p.status.code === 'CUS-1000';
+    st(ok ? 'ok' : 'warn', [p.status.code, p.status.description].filter(Boolean).join(' '));
+  }
+  if (p.list.length > 1) {
+    const sel = document.createElement('select'); sel.id = 'custSel'; sel.setAttribute('aria-label', 'เลือกลูกค้า');
+    p.list.forEach((c, i) => { const o = document.createElement('option'); o.value = i; o.textContent = (i + 1) + ' · ' + custName(c); sel.append(o); });
+    sel.value = String(S.custIdx);
+    sel.addEventListener('change', () => { S.custIdx = +sel.value; render(); });
+    foot.append(sel);
+  } else {
+    plain(custName(p.list[0]));
+  }
+}
+function renderOutput(){
+  const c = currentCust();
+  const led = $('#outLed'); led.className = 'led';
+  const badge = $('#outBadge');
+  const foot = $('#outFoot'); foot.replaceChildren();
+  const add = (cls, text) => { const s = document.createElement('span'); if (cls) s.className = 'st ' + cls; s.textContent = text; foot.append(s); return s; };
+  if (S.tplErr) {
+    S.built = null; badge.hidden = true; led.classList.add('err');
+    outEl.innerHTML = '<div class="out-empty"><strong>Template มีปัญหา</strong><span>' + esc(S.tplErr) + '</span><span>เปิดแผง Workflow Template ด้านล่างเพื่อแก้ หรือคืนค่าเริ่มต้น</span></div>';
+    add('err', 'แก้ Template ก่อน'); return;
+  }
+  if (!c) {
+    S.built = null; badge.hidden = true;
+    const msg = S.parsed && S.parsed.state === 'error' ? S.parsed.msg : 'วาง API response ทางซ้าย แล้ว Workflow ที่ Map แล้วจะขึ้นตรงนี้';
+    outEl.innerHTML = '<div class="out-empty"><strong>ยังไม่มีข้อมูลให้ Map</strong><span>' + esc(msg) + '</span></div>';
+    add('', 'รอ API response'); return;
+  }
+  const ids = S.ids;
+  const built = buildWorkflow(S.tpl, c, S.opts, ids);
+  S.built = built;
+  outEl.innerHTML = renderJSON(built.out, [], 0, built.marks);
+  badge.hidden = false;
+  if (ids) {
+    badge.textContent = 'พร้อมยิง'; badge.className = 'badge ok'; led.classList.add(built.miss ? 'warn' : 'ok');
+  } else {
+    badge.textContent = 'ตัวอย่าง'; badge.className = 'badge'; led.classList.add('warn');
+  }
+  add('ok', 'Map ' + built.mapped);
+  add('gen', ids ? 'สร้างใหม่ 3' : 'รอสร้างเลข 3');
+  if (built.miss) add('warn', 'ค่าว่าง ' + built.miss);
+  if (S.tpl.applicationGroup && S.tpl.applicationGroup !== GROUPS[S.grp].appGroup) add('warn', 'Template นี้เป็น ' + S.tpl.applicationGroup);
+  if (ids) {
+    const s = document.createElement('span');
+    s.append('applicationId ');
+    const code = document.createElement('code'); code.textContent = ids.applicationId; s.append(code);
+    s.append(ids.where === 'team' ? ' · จองในทีมแล้ว' : ' · จองในเครื่องนี้');
+    foot.append(s);
+    if (ids.custKey !== custKey(c)) add('warn', 'ลูกค้าเปลี่ยนจากตอนสร้างเลข กด Map เพื่อสร้างเลขใหม่');
+    else if (ids.prefix !== appParts(S.tpl).prefix) add('warn', 'prefix ใน Template เปลี่ยน กด Map เพื่อสร้างเลขใหม่');
+  } else {
+    add('', 'กด Map เพื่อสุ่ม rquId และจอง applicationId');
+  }
+}
+function renderDiagram(){
+  const c = currentCust();
+  const rep = S.built ? S.built.report : {};
+  $('#dRoot').textContent = 'searchCustomerProfile.data[' + (c ? S.custIdx : 0) + ']';
+  $('#dGroup').textContent = (S.tpl && S.tpl.applicationGroup) || GROUPS[S.grp].appGroup;
+  $('#dRqRule').textContent = GS[S.grp].rule === 'tail' ? 'เปลี่ยน 5 ตัวท้าย' : 'สุ่ม 5 ตำแหน่ง';
+  const ds = $('#dStatus');
+  const p = S.parsed;
+  if (p && p.state === 'ok') {
+    const ok = !p.status || !p.status.code || p.status.code === 'CUS-1000';
+    ds.className = 'st ' + (ok ? 'ok' : 'warn');
+    ds.textContent = p.status ? [p.status.code, p.status.description].filter(Boolean).join(' ') : 'พบลูกค้า';
+  } else { ds.className = 'st warn'; ds.textContent = p && p.state === 'error' ? 'อ่าน response ไม่ได้' : 'รอ response'; }
+  document.querySelectorAll('.mrow[data-f]').forEach(row => {
+    const f = row.dataset.f; const dot = row.querySelector('.dot'); const val = row.querySelector('.val');
+    val.className = 'val'; dot.className = 'dot';
+    if (f === 'rquId' || f === 'applicationId' || f === 'ncbTransactionId') {
+      if (S.ids) { dot.classList.add('gen'); val.textContent = f === 'rquId' ? S.ids.rquId : S.ids.applicationId; }
+      else { dot.classList.add('pend'); val.classList.add('pend'); val.textContent = 'รอกด Map'; }
+      return;
+    }
+    const r = rep[f];
+    if (!r) { dot.classList.add('pend'); val.classList.add('pend'); val.textContent = '—'; return; }
+    if (r.st === 'ok') { dot.classList.add('ok'); val.textContent = typeof r.v === 'number' ? r.v.toLocaleString('en-US') : r.v; }
+    else { dot.classList.add('warn'); val.classList.add('empty'); val.textContent = 'API ไม่มีค่า'; }
+  });
+}
+function renderRq(){
+  const st = GS[S.grp];
+  const base = S.tpl ? String(S.tpl.rquId) : '';
+  document.querySelectorAll('[data-rule]').forEach(b => { const on = b.dataset.rule === st.rule; b.classList.toggle('on', on); b.setAttribute('aria-pressed', String(on)); });
+  $('#rqOldK').textContent = 'Template ' + GROUPS[S.grp].short + (base ? ' · ' + base.length + ' ตัว' : '');
+  const old = $('#rqOld');
+  if (!base) old.textContent = '—';
+  else if (st.rule === 'tail') { const tgt = new Set(rqPositions(base, 'tail')); old.innerHTML = base.split('').map((ch, i) => tgt.has(i) ? '<u>' + esc(ch) + '</u>' : esc(ch)).join(''); }
+  else old.textContent = base;
+  const nw = $('#rqNew'), pos = $('#rqPos');
+  pos.replaceChildren();
+  if (S.ids) {
+    const set = new Set(S.ids.rquChanged);
+    nw.innerHTML = S.ids.rquId.split('').map((ch, i) => set.has(i) ? '<b>' + esc(ch) + '</b>' : esc(ch)).join('');
+    S.ids.rquChanged.forEach(i => { const s = document.createElement('span'); s.textContent = 'ตำแหน่ง ' + (i + 1); pos.append(s); });
+  } else {
+    nw.textContent = 'กด Map เพื่อสุ่ม';
+    const s = document.createElement('span'); s.className = 'hint';
+    s.textContent = st.rule === 'tail' ? 'จะเปลี่ยนตัวที่ขีดเส้นใต้' : 'จะสุ่มตำแหน่งใหม่ทุกครั้งที่กด Map'; pos.append(s);
+  }
+}
+let dotColors = null;
+function drawDots(){
+  const cv = $('#dots'); const box = cv.parentElement;
+  const w = Math.max(160, box.clientWidth); const cols = 50, rows = 20; const cell = w / cols; const h = Math.round(cell * rows);
+  const dpr = Math.min(2, window.devicePixelRatio || 1);
+  cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr); cv.style.height = h + 'px';
+  const g = cv.getContext('2d'); g.setTransform(dpr, 0, 0, dpr, 0, 0); g.clearRect(0, 0, w, h);
+  if (!dotColors) { const cs = getComputedStyle(document.documentElement); dotColors = { used: cs.getPropertyValue('--accent').trim() || '#a3adff', pink: cs.getPropertyValue('--pink').trim() || '#f3c2d4' }; }
+  const prefix = S.tpl && !S.tplErr ? appParts(S.tpl).prefix : null;
+  const used = prefix ? usedSuffixes(prefix) : new Set();
+  const tplS = S.tpl && !S.tplErr ? +appParts(S.tpl).suffix : -1;
+  const cur = S.ids && S.ids.prefix === prefix ? +S.ids.suffix : -1;
+  if (S.block != null) { // each range of 100 is two rows of 50
+    g.fillStyle = 'rgba(163,173,255,.12)';
+    const y0 = S.block * 2 * cell;
+    g.beginPath(); if (g.roundRect) g.roundRect(0, y0, w, cell * 2, cell * .5); else g.rect(0, y0, w, cell * 2); g.fill();
+  }
+  for (let i = 0; i < 1000; i++) {
+    const x = (i % cols) * cell + cell / 2, y = Math.floor(i / cols) * cell + cell / 2;
+    const inB = S.block != null && Math.floor(i / 100) === S.block;
+    g.beginPath();
+    if (i === cur) {
+      g.fillStyle = 'rgba(255,255,255,.22)'; g.arc(x, y, cell * .48, 0, 7); g.fill();
+      g.beginPath(); g.fillStyle = '#fff'; g.arc(x, y, cell * .3, 0, 7); g.fill();
+    } else if (i === tplS) {
+      g.strokeStyle = dotColors.pink; g.lineWidth = 1; g.arc(x, y, cell * .26, 0, 7); g.stroke();
+    } else if (used.has(pad3(i))) {
+      g.fillStyle = dotColors.used; g.arc(x, y, cell * .24, 0, 7); g.fill();
+    } else {
+      g.fillStyle = inB ? 'rgba(200,206,255,.55)' : 'rgba(170,180,230,.16)'; g.arc(x, y, cell * (inB ? .17 : .13), 0, 7); g.fill();
+    }
+  }
+  cv.setAttribute('aria-label', 'ใช้แล้ว ' + used.size + ' จาก 1000 เลข');
+}
+function renderToggles(){
+  const list = $('#tgList');
+  const c = currentCust();
+  const ctx = { rmLen: S.tpl && typeof S.tpl.borrowerInfo?.[0]?.rmID === 'string' ? S.tpl.borrowerInfo[0].rmID.length : 14 };
+  if (!list.children.length) {
+    OPTIONAL.forEach(g => {
+      const lab = document.createElement('label'); lab.className = 'tg'; lab.title = g.fields.map(f => f.f.replace('identifiedAddress.', '') + ' ← ' + f.src).join('\n');
+      const inp = document.createElement('input'); inp.type = 'checkbox'; inp.id = 'opt-' + g.id; inp.checked = S.opts[g.id];
+      inp.addEventListener('change', () => { S.opts[g.id] = inp.checked; LS.set('emw.opts.' + S.grp, S.opts); render(); });
+      const sw = document.createElement('span'); sw.className = 'sw';
+      const l = document.createElement('span'); l.className = 'tg-l'; l.textContent = g.label;
+      const v = document.createElement('span'); v.className = 'tg-v'; v.dataset.g = g.id;
+      lab.append(inp, sw, l, v); list.append(lab);
+    });
+  }
+  const tpl = S.tplErr ? null : S.tpl;
+  let on = 0, avail = 0;
+  OPTIONAL.forEach(g => {
+    const inp = $('#opt-' + g.id), lab = inp.parentElement;
+    const ok = !tpl || optAvail(g, tpl);
+    inp.disabled = !ok; lab.classList.toggle('off', !ok);
+    const checked = ok && !!S.opts[g.id];
+    if (inp.checked !== checked) inp.checked = checked;
+    if (ok) { avail++; if (checked) on++; }
+    const v = list.querySelector('.tg-v[data-g="' + g.id + '"]');
+    if (!ok) { v.textContent = 'ไม่มีในเส้นนี้'; return; }
+    if (!c) { v.textContent = '—'; return; }
+    const vals = g.fields.filter(f => !tpl || hasPath(tpl, f.path)).map(f => f.get(c, ctx)).filter(x => !isBlank(x));
+    v.textContent = vals.length ? vals.join(' · ') : '(ว่าง)';
+  });
+  $('#optTag').textContent = on ? 'เปิด ' + on + ' จาก ' + avail : 'ปิดทั้งหมด';
+  $('#chipOpts').textContent = on + ' / ' + avail;
+  $('#btnOptAll').firstChild.textContent = avail && on === avail ? 'ปิดทั้งหมด ' : 'เปิดทั้งหมด ';
+}
+function renderMeta(){
+  if (S.tpl && !S.tplErr) {
+    const { prefix } = appParts(S.tpl);
+    const used = usedSuffixes(prefix).size;
+    $('#chipPrefix').textContent = prefix;
+    $('#chipUsed').textContent = used + ' / 1000';
+    $('#dotPrefix').textContent = prefix + '···';
+    const tplS = appParts(S.tpl).suffix;
+    const usedSet = usedSuffixes(prefix);
+    $('#dotTag').textContent = S.block == null ? 'ยังไม่เลือกช่วงเลข'
+      : 'ว่างในช่วง ' + S.block + 'xx: ' + blockSuffixes(S.block).filter(s => !usedSet.has(s) && s !== tplS).length;
+  } else {
+    $('#chipPrefix').textContent = '—'; $('#chipUsed').textContent = '—';
+  }
+  drawDots();
+  renderCompare();
+  renderBlocks();
+}
+function renderBlocks(){
+  const chip = $('#chipBlock'), grid = $('#blkGrid'), panel = $('#blkPanel');
+  $('#chipBlockV').textContent = S.block == null ? 'ยังไม่เลือก' : S.block + 'xx';
+  chip.classList.toggle('need', S.block == null);
+  chip.setAttribute('aria-expanded', String(!panel.hidden));
+  const prefix = S.tpl && !S.tplErr ? appParts(S.tpl).prefix : null;
+  const used = prefix ? usedSuffixes(prefix) : new Set();
+  if (!grid.children.length) {
+    for (let b = 0; b < 10; b++) {
+      const btn = document.createElement('button'); btn.type = 'button'; btn.dataset.blk = b;
+      const n = document.createElement('b'); n.textContent = b + 'xx';
+      const r = document.createElement('small'); r.textContent = pad3(b * 100) + '–' + pad3(b * 100 + 99);
+      const c = document.createElement('i');
+      btn.append(n, r, c); grid.append(btn);
+    }
+  }
+  [...grid.children].forEach(btn => {
+    const b = +btn.dataset.blk, on = b === S.block;
+    btn.classList.toggle('on', on); btn.setAttribute('aria-pressed', String(on));
+    const k = [...used].filter(s => s[0] === String(b)).length;
+    btn.querySelector('i').textContent = k ? 'ใช้ ' + k : 'ว่าง';
+  });
+}
+function openBlocks(open){
+  const panel = $('#blkPanel');
+  panel.hidden = !open;
+  $('#chipBlock').setAttribute('aria-expanded', String(open));
+}
+function renderCompare(){
+  const t = $('#cmpTable'); if (!t) return;
+  const ids = Object.keys(GROUPS);
+  const tp = id => GS[id].err ? null : GS[id].tpl;
+  const keysOf = (id, pick) => { const o = tp(id) && pick(tp(id)); return o && typeof o === 'object' ? Object.keys(o) : []; };
+  const diff = (id, pick) => {
+    const mine = keysOf(id, pick), other = [...new Set(ids.filter(x => x !== id).flatMap(x => keysOf(x, pick)))];
+    const only = mine.filter(k => !other.includes(k)), lack = other.filter(k => !mine.includes(k));
+    return [only.length ? 'มีเพิ่ม ' + only.join(', ') : '', lack.length ? 'ไม่มี ' + lack.join(', ') : ''].filter(Boolean).join(' · ');
+  };
+  const bInfo = o => o.borrowerInfo && o.borrowerInfo[0], lInfo = o => o.loanInfo;
+  const rows = [
+    ['applicationGroup', id => [tp(id)?.applicationGroup ?? '—', '']],
+    ['prefix applicationId', id => { if (!tp(id)) return ['—', '']; const p = appParts(tp(id)).prefix; return [p + '···', 'ใช้แล้ว ' + usedSuffixes(p).size + ' จาก 1000']; }],
+    ['rquId', id => tp(id) ? [String(tp(id).rquId).length + ' ตัว', GS[id].rule === 'tail' ? 'เปลี่ยน 5 ตัวท้าย' : 'สุ่ม 5 ตำแหน่งทั้งเส้น'] : ['—', '']],
+    ['borrowerInfo', id => [keysOf(id, bInfo).length + ' ฟิลด์', diff(id, bInfo)]],
+    ['loanInfo', id => { const l = tp(id)?.loanInfo || {}; return [[l.productType, l.subProductType].filter(x => !isBlank(x)).join(' · ') || '—', diff(id, lInfo)]; }],
+    ['ฟิลด์เสริม', id => [tp(id) ? OPTIONAL.filter(o => optAvail(o, tp(id))).length + ' จาก ' + OPTIONAL.length + ' กลุ่ม' : '—', '']],
+  ];
+  const cls = id => id === S.grp ? ' class="cur"' : '';
+  let h = '<thead><tr><th scope="col"><span class="sr">รายการ</span></th>' + ids.map(id => '<th scope="col"' + cls(id) + '>' + esc(GROUPS[id].name) + (id === S.grp ? '<span class="cmp-tag">กำลังใช้</span>' : '') + '<small>' + esc(GROUPS[id].th) + '</small></th>').join('') + '</tr></thead><tbody>';
+  for (const [label, fn] of rows) {
+    h += '<tr><th scope="row">' + esc(label) + '</th>' + ids.map(id => { const [v, n] = fn(id); return '<td' + cls(id) + '><span class="v">' + esc(v) + '</span>' + (n ? '<span class="n">' + esc(n) + '</span>' : '') + '</td>'; }).join('') + '</tr>';
+  }
+  t.innerHTML = h + '</tbody>';
+}
+const fmtTime = new Intl.DateTimeFormat('th-TH', { day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' });
+function renderHistory(){
+  const list = $('#histList'); if (!list) return;
+  const q = $('#histSearch').value.trim().toLowerCase();
+  const all = allRecords().sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+  const rows = all.filter(r => { if (!q) return true; const gid = grpOf(r); return [r.applicationId, r.rquId, r.firstName, r.lastName, r.referenceNo, gid && GROUPS[gid].short, gid && GROUPS[gid].name].join(' ').toLowerCase().includes(q); }).slice(0, 300);
+  $('#histCount').textContent = all.length ? all.length + ' รายการ' : '';
+  list.replaceChildren();
+  if (!rows.length) {
+    const e = document.createElement('div'); e.className = 'h-empty';
+    e.textContent = all.length ? 'ไม่พบรายการที่ตรงกับคำค้น' : (S.mode === 'connecting' ? 'กำลังโหลดประวัติของทีม…' : 'ยังไม่มีเลขที่สร้าง กด Map ด้านบนเพื่อสร้างเลขแรก แล้วรายการจะขึ้นที่นี่');
+    list.append(e);
+  }
+  const ids = new Set();
+  for (const r of rows) {
+    const row = document.createElement('div'); row.className = 'hrow';
+    const t = document.createElement('span'); t.className = 'h-time'; t.textContent = r.createdAt ? fmtTime.format(new Date(r.createdAt)) : '—';
+    const a = document.createElement('span'); a.className = 'h-app'; a.title = 'rquId ' + (r.rquId || '—');
+    const id = String(r.applicationId);
+    const gid = grpOf(r);
+    if (gid) { const gc = document.createElement('i'); gc.className = 'h-grp ' + gid; gc.textContent = GROUPS[gid].short; gc.title = GROUPS[gid].name; a.append(gc); }
+    a.append(id.slice(0, -3)); const em = document.createElement('em'); em.textContent = id.slice(-3); a.append(em);
+    const cu = document.createElement('span'); cu.className = 'h-cust';
+    cu.textContent = [r.firstName, r.lastName].filter(Boolean).join(' ') || '—';
+    if (r.referenceNo) { const sm = document.createElement('small'); sm.textContent = r.referenceNo; cu.append(sm); }
+    const by = document.createElement('span'); by.className = 'h-by';
+    if (r.local) by.textContent = 'เครื่องนี้';
+    else if (r.by && r.by === S.uid) { by.textContent = 'คุณ'; by.classList.add('me'); }
+    else if (r.by) { by.textContent = 'เพื่อนในทีม'; by.dataset.uid = r.by; ids.add(r.by); }
+    else by.textContent = 'ไม่ระบุ';
+    const cp = document.createElement('button'); cp.type = 'button'; cp.className = 'h-copy'; cp.textContent = 'คัดลอก';
+    cp.addEventListener('click', () => copyText(id, 'คัดลอก ' + id + ' แล้ว'));
+    row.append(t, a, cu, by, cp); list.append(row);
+  }
+  if (ids.size && S.user) {
+    S.user.profiles([...ids]).then(ps => {
+      list.querySelectorAll('.h-by[data-uid]').forEach(el => { const p = ps[el.dataset.uid]; if (p && p.name) el.textContent = p.name; });
+    }).catch(() => {});
+  }
+  const note = $('#histNote');
+  note.textContent = S.modeNote || (S.mode === 'team' ? 'ซิงก์กับทีมแบบเรียลไทม์' : '');
+  note.hidden = !note.textContent;
+}
+function renderGroup(){
+  const G = GROUPS[S.grp], st = GS[S.grp];
+  document.querySelectorAll('[data-grp]').forEach(b => { const on = b.dataset.grp === S.grp; b.classList.toggle('on', on); b.setAttribute('aria-pressed', String(on)); b.disabled = S.busy && !on; });
+  $('#outGroup').textContent = (st.tpl && st.tpl.applicationGroup) || G.appGroup;
+  $('#tplName').textContent = G.name;
+  const ts = $('#tplStatus'), te = $('#tplErr');
+  if (st.err) { ts.textContent = 'มีข้อผิดพลาด'; te.textContent = st.err; return; }
+  ts.textContent = (st.text === G.tplText ? 'ค่าเริ่มต้น' : 'แก้ไขแล้ว') + ' · prefix ' + appParts(st.tpl).prefix;
+  te.textContent = st.tpl.applicationGroup && st.tpl.applicationGroup !== G.appGroup ? 'Template นี้มี applicationGroup เป็น ' + st.tpl.applicationGroup + ' แต่กำลังเลือกเส้น ' + G.name : '';
+}
+function switchGroup(id){
+  if (!isGroup(id) || id === S.grp || S.busy) return;
+  if (tplEl.value !== GS[S.grp].text) onTpl();
+  S.grp = id; LS.set('emw.group', id);
+  tplEl.value = GS[id].text;
+  render(); renderHistory();
+}
+function render(){
+  renderGroup(); renderApiFoot(); renderOutput(); renderDiagram(); renderRq(); renderToggles(); renderMeta();
+  $('#sampleBadge').hidden = apiEl.value !== SAMPLE_TEXT;
+  $('#btnMapText').textContent = S.ids ? 'Map ใหม่' : 'Map';
+}
+
+/* ── Actions ──────────────────────────────────────── */
+let toastT;
+function toast(msg, kind){
+  const t = $('#toast'); t.className = 'toast' + (kind ? ' ' + kind : ''); $('#toastText').textContent = msg; t.hidden = false;
+  clearTimeout(toastT); toastT = setTimeout(() => { t.hidden = true; }, 3200);
+}
+function selectNode(el){ try { const r = document.createRange(); r.selectNodeContents(el); const s = getSelection(); s.removeAllRanges(); s.addRange(r); } catch {} }
+function copyText(text, okMsg, fallbackEl){
+  const p = navigator.clipboard && navigator.clipboard.writeText ? navigator.clipboard.writeText(text) : Promise.reject();
+  p.then(() => toast(okMsg)).catch(() => { if (fallbackEl) selectNode(fallbackEl); toast(fallbackEl ? 'เลือกข้อความไว้แล้ว กด Ctrl+C เพื่อคัดลอก' : 'คัดลอกอัตโนมัติไม่ได้ ลองเลือกข้อความแล้วกด Ctrl+C', 'warn'); });
+}
+function copyOut(){
+  if (!S.built) { toast('ยังไม่มีผลลัพธ์ วาง API response ก่อน', 'warn'); return; }
+  if (!S.ids) { toast('กด Map ก่อน เพื่อสุ่ม rquId และจอง applicationId ใหม่', 'warn'); return; }
+  copyText(JSON.stringify(S.built.out, null, 2), 'คัดลอก JSON แล้ว นำไปวางใน Postman ได้เลย', outEl);
+}
+async function doMap(){
+  if (S.busy) return;
+  if (S.tplErr) { $('#tplBox').open = true; toast(S.tplErr, 'err'); return; }
+  const c = currentCust();
+  if (!c) { toast(S.parsed && S.parsed.state === 'error' ? S.parsed.msg : 'วาง API response ก่อน', 'err'); apiEl.focus(); return; }
+  if (S.block == null) {
+    openBlocks(true);
+    $('#blkPanel').scrollIntoView({ block:'nearest', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+    toast('เลือกช่วงเลขของคุณก่อน แล้วกด Map อีกครั้ง', 'warn'); return;
+  }
+  const g = S.grp;
+  S.busy = true; renderGroup(); const btn = $('#btnMap'); btn.disabled = true; $('#btnMapText').textContent = S.mode === 'connecting' ? 'กำลังเชื่อมต่อ…' : 'กำลังจอง…';
+  try {
+    GS[g].ids = await claimIds(c, g);
+    render(); renderHistory();
+    toast(GROUPS[g].name + ' · สร้าง applicationId ' + GS[g].ids.applicationId + ' แล้ว');
+  } catch (e) {
+    if (e && e.code === 'exhausted') toast('ช่วง ' + S.block + 'xx ของ prefix นี้ใช้ครบแล้ว เลือกช่วงอื่นที่ยังไม่มีใครใช้', 'err');
+    else toast('สร้างเลขไม่สำเร็จ ลองกด Map อีกครั้ง', 'err');
+  } finally { S.busy = false; btn.disabled = false; render(); }
+}
+async function reroll(quiet){
+  if (!S.ids) { if (!quiet) toast('กด Map ก่อน แล้วค่อยสุ่ม rquId ใหม่', 'warn'); return; }
+  const rule = GS[S.grp].rule;
+  const rq = mutateRquId(String(S.tpl.rquId), new Set(allRecords().map(r => r.rquId)), rule);
+  S.ids = { ...S.ids, rquId: rq.value, rquChanged: rq.changed, rule };
+  render();
+  if (S.ids.where === 'team' && S.db) {
+    try { await S.db.doc('apps/' + S.ids.applicationId).update({ rquId: rq.value }); } catch {}
+  } else {
+    const r = S.local.find(x => x.applicationId === S.ids.applicationId);
+    if (r) { r.rquId = rq.value; LS.set('emw.local', S.local); renderHistory(); }
+  }
+  if (!quiet) toast('สุ่ม rquId ใหม่แล้ว');
+}
+function onApi(){
+  S.parsed = parseApi(apiEl.value);
+  if (S.parsed.state === 'ok' && S.custIdx >= S.parsed.list.length) S.custIdx = 0;
+  render();
+}
+function onTpl(){
+  const id = S.grp, st = GS[id];
+  st.text = tplEl.value;
+  const r = parseTpl(st.text);
+  if (r.err) st.err = r.err; else { st.tpl = r.tpl; st.err = ''; }
+  try { if (st.text === GROUPS[id].tplText) localStorage.removeItem('emw.tpl.' + id); else LS.set('emw.tpl.' + id, st.text); } catch {}
+  render();
+}
+
+/* ── Wire up ──────────────────────────────────────── */
+tplEl.value = GS[S.grp].text;
+apiEl.value = SAMPLE_TEXT;
+S.parsed = parseApi(apiEl.value);
+
+apiEl.addEventListener('input', debounce(onApi, 120));
+apiEl.addEventListener('paste', () => setTimeout(() => {
+  onApi();
+  const c = currentCust();
+  if (c && !S.tplErr && (!S.ids || S.ids.custKey !== custKey(c))) doMap();
+}, 0));
+tplEl.addEventListener('input', debounce(onTpl, 200));
+$('#btnTplReset').addEventListener('click', () => { tplEl.value = GROUPS[S.grp].tplText; onTpl(); toast('คืนค่า Template ' + GROUPS[S.grp].name + ' แล้ว'); });
+document.querySelectorAll('[data-grp]').forEach(b => b.addEventListener('click', () => switchGroup(b.dataset.grp)));
+document.querySelectorAll('[data-rule]').forEach(b => b.addEventListener('click', () => {
+  const r = b.dataset.rule, st = GS[S.grp];
+  if (st.rule === r) return;
+  st.rule = r; LS.set('emw.rq.' + S.grp, r);
+  if (S.ids) reroll(true); else render();
+  toast(GROUPS[S.grp].name + ': rquId ' + (r === 'tail' ? 'เปลี่ยน 5 ตัวท้าย' : 'สุ่ม 5 ตำแหน่งทั้งเส้น'));
+}));
+$('#btnMap').addEventListener('click', doMap);
+$('#btnCopy').addEventListener('click', copyOut);
+$('#ctaCopy').addEventListener('click', copyOut);
+$('#btnClear').addEventListener('click', () => { apiEl.value = ''; onApi(); apiEl.focus(); });
+$('#btnSample').addEventListener('click', () => { apiEl.value = SAMPLE_TEXT; onApi(); });
+$('#btnReroll').addEventListener('click', () => reroll());
+$('#btnOptAll').addEventListener('click', () => {
+  const av = OPTIONAL.filter(g => S.tplErr || optAvail(g, S.tpl));
+  const allOn = av.every(g => S.opts[g.id]);
+  av.forEach(g => { S.opts[g.id] = !allOn; }); LS.set('emw.opts.' + S.grp, S.opts); render();
+});
+$('#ctaNew').addEventListener('click', () => {
+  $('#tool').scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block:'start' });
+  apiEl.value = ''; onApi(); setTimeout(() => apiEl.focus({ preventScroll:true }), 350);
+});
+$('#footTpl').addEventListener('click', e => { e.preventDefault(); const d = $('#tplBox'); d.open = true; d.scrollIntoView({ block:'center' }); });
+document.querySelectorAll('[data-focus-api]').forEach(a => a.addEventListener('click', () => setTimeout(() => { apiEl.focus({ preventScroll:true }); apiEl.select(); }, 400)));
+$('#histSearch').addEventListener('input', debounce(renderHistory, 120));
+document.addEventListener('keydown', e => { if (!gate.hidden) return; if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); doMap(); } });
+$('#chipBlock').addEventListener('click', () => openBlocks($('#blkPanel').hidden));
+$('#blkGrid').addEventListener('click', e => {
+  const btn = e.target.closest('button[data-blk]'); if (!btn) return;
+  const b = +btn.dataset.blk, first = S.block == null;
+  S.block = b; LS.set('emw.block', b);
+  openBlocks(false); render();
+  toast('ใช้ช่วงเลข ' + b + 'xx (' + pad3(b * 100) + '–' + pad3(b * 100 + 99) + ')' + (first ? ' กด Map ได้เลย' : ''));
+});
+
+/* ── Access gate ──────────────────────────────────── */
+// A door for people who stumble on the link, not security: the check runs in the browser.
+const PASS_HASH = 'e0bc60c82713f64ef8a57c0c40d02ce24fd0141d5cc3086259c19b1e62a62bea';
+const gate = $('#gate'), gateCode = $('#gateCode');
+const lockable = [$('header.hero'), $('main'), $('footer.foot')];
+function setLocked(on){
+  gate.hidden = !on;
+  document.documentElement.classList.toggle('locked', on);
+  lockable.forEach(el => { if (el) el.inert = on; });
+  if (on) { gateCode.value = ''; $('#gateErr').textContent = ''; setTimeout(() => gateCode.focus(), 60); }
+}
+async function sha256(s){
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s));
+  return [...new Uint8Array(buf)].map(x => x.toString(16).padStart(2, '0')).join('');
+}
+let checking = false;
+async function tryUnlock(){
+  if (checking) return;
+  const v = gateCode.value.trim(), err = $('#gateErr');
+  if (!v) { err.textContent = 'ใส่รหัส 6 หลัก'; gateCode.focus(); return; }
+  checking = true;
+  let h = null;
+  try { h = await sha256(v); } catch { err.textContent = 'เบราว์เซอร์นี้ตรวจรหัสไม่ได้ ลองเปิดด้วย Chrome, Edge หรือ Safari รุ่นใหม่'; }
+  checking = false;
+  if (h == null) return;
+  if (h !== PASS_HASH) {
+    err.textContent = 'รหัสไม่ถูกต้อง ลองอีกครั้ง';
+    const card = $('#gateForm'); card.classList.remove('shake'); void card.offsetWidth; card.classList.add('shake');
+    gateCode.select(); return;
+  }
+  try { localStorage.setItem('emw.pass', h); } catch {}
+  setLocked(false);
+  if (S.block == null) openBlocks(true);
+  toast(S.block == null ? 'เข้าใช้งานแล้ว เลือกช่วงเลขของคุณก่อนเริ่ม Map' : 'เข้าใช้งานแล้ว');
+}
+$('#gateForm').addEventListener('submit', e => { e.preventDefault(); tryUnlock(); });
+gateCode.addEventListener('input', () => {
+  const v = gateCode.value.replace(/\D/g, '').slice(0, 6);
+  if (v !== gateCode.value) gateCode.value = v;
+  $('#gateErr').textContent = '';
+  if (v.length === 6) tryUnlock();
+});
+$('#btnLock').addEventListener('click', () => { try { localStorage.removeItem('emw.pass'); } catch {} setLocked(true); window.scrollTo(0, 0); });
+setLocked(!gate.hidden);
+if (gate.hidden && S.block == null) openBlocks(true);
+
+/* ── Sky ──────────────────────────────────────────── */
+function drawSky(){
+  const cv = $('#sky'); const hero = cv.parentElement;
+  const w = hero.clientWidth, h = hero.clientHeight; if (!w || !h) return;
+  const dpr = Math.min(2, window.devicePixelRatio || 1);
+  cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr);
+  const g = cv.getContext('2d'); g.setTransform(dpr, 0, 0, dpr, 0, 0); g.clearRect(0, 0, w, h);
+  let seed = 20261110; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+  const bands = [[.16,.58,.9,.12,'154,140,255',.10],[.8,.66,.85,.13,'243,194,212',.07],[.5,.8,1.3,.16,'134,182,255',.07],[.35,.34,.7,.08,'189,169,255',.05]];
+  for (const [x, y, rw, rh, col, a] of bands) {
+    g.save(); g.translate(x * w, y * h); g.scale(1, rh / rw); const r = rw * w / 2;
+    const grd = g.createRadialGradient(0, 0, 0, 0, 0, r); grd.addColorStop(0, `rgba(${col},${a})`); grd.addColorStop(1, `rgba(${col},0)`);
+    g.fillStyle = grd; g.beginPath(); g.arc(0, 0, r, 0, Math.PI * 2); g.fill(); g.restore();
+  }
+  const n = Math.round(w * h / 2400);
+  for (let i = 0; i < n; i++) {
+    const x = rnd() * w, y = Math.pow(rnd(), 1.5) * h * .78, big = rnd() > .93;
+    g.fillStyle = `rgba(226,229,255,${(.1 + rnd() * .5).toFixed(3)})`;
+    g.beginPath(); g.arc(x, y, big ? 1.1 : .6, 0, 7); g.fill();
+  }
+}
+let lastW = 0;
+const ro = new ResizeObserver(debounce(() => {
+  drawSky();
+  const w = $('#dots').parentElement.clientWidth; if (w !== lastW) { lastW = w; drawDots(); }
+}, 120));
+ro.observe($('.hero')); ro.observe($('#dots').parentElement);
+
+render();
+renderHistory();
+const cloudReady = initCloud();
+})();
+</script>
+</body>
+</html>
